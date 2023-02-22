@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<html>
+    <link rel="shortcut icon" type="image/icon" href="https://opmdata.com/favicon.ico"> 
+    <head>
+
+    </head>
+
+    <body>
+        <h1> OPM: Road to Hero 2.0 - Hero Data </h1>
+
+        <div id="entries">
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script type="text/javascript">
+            var API_URL = 'https://thelazygame.com/hero-list';
+            $(document).ready(function(){
+                $.ajax({
+                    url: API_URL,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data){
+                        $('#entries').html('');
+                        $('#entries').append('<p>' + data + '</p>');
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,81 @@
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700");
+*, *:before, *:after {
+  box-sizing: border-box; }
+
+body {
+  padding: 10px;
+  font-size: 14px;
+  font-family: 'Source Sans Pro', sans-serif;
+  margin: 0;
+  background-color: #212020;
+  color: #d5d5d5; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0; }
+
+.container {
+  max-width: 97%;
+  margin-right: auto;
+  margin-left: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; }
+
+.table {
+  width: 100%; }
+
+.table-header {
+  display: flex;
+  width: 100%;
+  padding: 7.5px 0;
+  border: 3px;
+  border-color: #EEEEEE; }
+
+.table-row {
+  display: flex;
+  width: 100%;
+  padding: 7.5px 0; }
+  .table-row:nth-of-type(odd) {
+    background: #3a3a3a; }
+
+.table-data, .header__item {
+  flex: 1 1 20%;
+  text-align: left;
+  margin-right: 5px; }
+
+.title {
+  font-family: "Arial Black", "Arial Bold", Gadget, sans-serif;
+  font-size: 12px;
+  margin: 0 -1px -1px 0;
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-bottom: 10px; }
+
+.header__item {
+  text-transform: uppercase; }
+
+.filter__link {
+  color: white;
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+  padding-left: 10px;
+  padding-right: 10px; }
+  .filter__link::after {
+    content: '';
+    position: absolute;
+    right: -7.5px;
+    color: white;
+    font-size: 5px;
+    top: 50%;
+    transform: translateY(-50%); }
+  .filter__link.desc::after {
+    content: '(desc)'; }
+  .filter__link.asc::after {
+    content: '(asc)'; }
+
+/*# sourceMappingURL=style.css.map */

@@ -20,9 +20,12 @@ lang='Default_English'
 #                        HeroGradeProperty
 #Bots Level              DroidLevelGrowth
 #Bots Quality            DroidStar
+#Potential Chip          Potential Chips /Not Yet Added to data
+
 
 lFiles=[  #There should be a function that matches each name in this list, which tell genMappings how to read to file.
     lang,
+    'HeroBlessSkill',
     'HeroLimiter',
     'HeroSkillDesc',
     'Hero',
@@ -308,6 +311,35 @@ def HeroLimiter(reader):
     except:
         dLine=None
     return dLine
+
+def HeroBlessSkill(reader):
+    #*288*42*4*3*10456234*10456342*1*1*******2*1*
+    #*57*9*5*1*10456206*10456309*2%,2%,2%*1*1:1,2,3,4,5,6*9*23,200;33,200;43,200*23,200;33,200;43,200*****
+    dLine={}
+    for line in reader:
+        row = line.split('\\n')
+        if not row[0].startswith("#"): #All of these files start with a commented descriptor.
+            mBlessStat={}
+            mString={
+                'id': row[0].split('*')[2],
+                'descval':row[0].split('*')[6],
+                row[0].split('*')[3]:{
+                'perct': row[0].split('*')[6],
+                'hp': row[0].split('*')[4].split(';')[0].split(',')[1],
+                'atk': row[0].split('*')[4].split(';')[1].split(',')[1],
+                'def': row[0].split('*')[4].split(';')[2].split(',')[1]
+                
+            }}
+            try: #The first entry for the individual skill will throw an error without this.
+                dLine[row[0].split('*')[2]].update(mString) #Then set the base skill id as the key for all skill level ids.
+            except:
+                dLine[row[0].split('*')[2]]=mString #Create a map list of all skill levels and associate them to a single skill id.
+    try:
+       dLine
+    except:
+        dLine=None
+    return dLine
+
 
 def HeroQualityProperty(reader): #You can upgrade the quality of the hero, like moving from purple to red, etc
     #*1*1*1*10000*10000*10000*0*0*0*21,1;31,1;41,1*21,1;31,1;41,1*21,1;31,1;41,1*21,1;31,1;41,1*21,1;31,1;41,1*21,1;31,1;41,1*
@@ -696,6 +728,10 @@ def mapStats(dStats):
             except:
                 limiter=None
             try:
+                blessing=dStats['HeroBlessing'][vStat['heroid']]
+            except:
+                blessing=None
+            try:
                 lStat={
                     'base': {
                         'HP': vStat['hp'],
@@ -718,6 +754,7 @@ def mapStats(dStats):
                     },
                     'quality': dStats['HeroQualityProperty'][vStat['heroid']],
                     'grade': dStats['HeroGradeProperty'][vStat['heroid']], #This is not yet implemented as of August 2021, but I'm putting it in now before I forget how to read/write my script.
+                    'blessing': blessing,
                     'limiter': limiter  
                 }
             except:

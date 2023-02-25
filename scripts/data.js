@@ -1,4 +1,4 @@
-var API_URL = 'https://opmdata.com/hero-list';
+var API_URL = 'https://thelazygame.com/hero-list';
 function skills (skill){
     var lRow="";
 

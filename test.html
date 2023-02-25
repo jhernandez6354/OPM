@@ -3,13 +3,35 @@
 <html>
     <link rel="shortcut icon" type="image/icon" href="https://opmdata.com/favicon.ico"> 
     <head>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
+        <input type="text" id="userin" onkeyup="search_hero()" placeholder="Search for hero..">
+        
+        <div class="row" name="team_buff" id="id_row" >
+            <ul id="id_hero_buff">
+                <li>
+                <label for="id_hero_0"><input type="checkbox" name="hero" value="Team Damage Boost" placeholder="Hero Boosts Team Damage" class="id_hero_0" checked>Team Damage Boost</label>
+                </li>
+                <li><label for="id_hero_1"><input type="checkbox" name="hero" value="Shield" placeholder="Hero Creates Shields for Team" class="id_hero_1" checked>Team Shield</label>
+                </li>
+                <li><label for="id_hero_2"><input type="checkbox" name="hero" value="Heal" placeholder="Hero Heals Team" class="id_hero_2" checked>Team Heal</label>
+                </li>
+            </ul>
+        </div>
+        <div class="row" name="bot_checkbox" id="id_row" >
+            <ul id="id_bot">
+                <li>
+                <label for="id_bot_0"><input type="checkbox" name="bot" value="Bot Level Boost" placeholder="Hero Boosts Bot Level" class="id_bot_0" checked>Bot Level Boost</label>
+                </li>
+                <li><label for="id_bot_1"><input type="checkbox" name="bot" value="Is Bot" placeholder="Hero Is A Bot" class="id_bot_1" checked>Show Bots</label>
+                </li>
+            </ul>
+        </div>
         <div class="container" id="container"></div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-        <script type="text/javascript" src="table.js"></script>
-        <script type="text/javascript" src='data-test.js'>
+        <script type="text/javascript" src="scripts/table.js"></script>
+        <script type="text/javascript" src='scripts/data-test.js'>
         </script>
     </body>
 </html> 

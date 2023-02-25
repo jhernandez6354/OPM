@@ -35,8 +35,8 @@ $.each( properties, function( i, val ) {
 			
 		rows.sort(function(a, b){
 
-			var x = $(a).find('.table-data').eq(index).text();
-    			var y = $(b).find('.table-data').eq(index).text();
+			var x = $(a).find('.table-row').eq(index).text();
+    			var y = $(b).find('.table-row').eq(index).text();
 				
 			if(isNumber == true) {
     					

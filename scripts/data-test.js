@@ -1,6 +1,8 @@
 //To Test, run the following command in your terminal:
     // python -m http.server
 // Open up your browser to http://127.0.0.1:8000/test.html
+
+
 function skills (skill){
     var lRow="";
 
@@ -23,9 +25,20 @@ function talents (talent){
         var vTalent = Object.keys(talent[sid]);
         lRow+="<div class=\"table-data\"><div class=\"title\">"+vTalent+"</div>"; //the name of the talent
         for (i = 0; i < talent[sid][vTalent].length; i++) {
-            lRow+=talent[sid][vTalent][i].desc+"<br>";
+            lRow+="<li>"+talent[sid][vTalent][i].desc+"</li><br>";
         }
         lRow+="</div>"
+    }
+    return lRow
+}
+
+function blessings (bless){
+    var lRow="";
+    if (Object.keys(bless).length > 0 ){
+        lRow="<div class=\"table-data\"><div class=\"title\">"+bless['bless_name']+"</div>"; //the name of the talent
+        lRow+=bless['bless_desc']+"<br></div>";
+    } else {
+        lRow="<div class=\"table-data\">No Blessing<br></div>"
     }
     return lRow
 }
@@ -58,7 +71,7 @@ function filter(event, filter) {
     for (let i = 0; i < data.length; i++) {
         if (filter.some(v => (data[i].innerHTML).includes(v))) {
             if (element.checked == true) {
-                data[i].parentElement.closest('details').style = "display:inline"
+                data[i].parentElement.closest('details').style = "display:inline-block"
             } else {
                 data[i].parentElement.closest('details').style = "display:none"
             }
@@ -72,7 +85,6 @@ function filter_bots(event) {
     let bots=["Laser","Spike","Potion","Waste Oil","Electric Current","Operator","Iron Falcon","Cannon","Electric Saw","Door Board","Earthquake","Iron Hammer"];
     for (let i = 0; i < data.length; i++) {
         if (bots.some(v => (data[i].innerHTML).includes(v))) {
-            console.log(data[i])
             if (element.checked == true) {
                 data[i].parentElement.closest('details').style = "display:inline-block"
             } else {
@@ -96,12 +108,12 @@ const logFileText = async file => {
         tablearray.push('<div class="table-row">')
         var skill = skills(data[id].details.skill);
         var talent = talents(data[id].details.talent);
+        var blessing = blessings(data[id].details.blessing);
         var limit = data[id].details.limit
-        var blessing = data[id].details.blessing;
         tablearray.push(skill);
         tablearray.push(talent);
         tablearray.push("<div class=\"table-data\">" + limit+"</div>");
-        tablearray.push("<div class=\"table-data\">" + blessing+"</div>");
+        tablearray.push(blessing);
         tablearray.push('</div></details>')
     }
     tablearray.push("</div></div>");
@@ -113,7 +125,7 @@ logFileText('./hero_data/herolist.json')
 document.querySelectorAll('.id_hero_0').forEach(input => input.addEventListener('input', ()=>filter(event,["Heals the ally","healing self and the ally","Healing to allies"])));
 document.querySelectorAll('.id_hero_1').forEach(input => input.addEventListener('input', ()=>filter(event,["Attack of allies","all allies' Attack"])));
 document.querySelectorAll('.id_hero_2').forEach(input => input.addEventListener('input', ()=>filter(event,["all allies gain a shield"])));
-
+document.querySelectorAll('.id_hero_3').forEach(input => input.addEventListener('input', ()=>filter(event,["Stun the target", "hance to cause Stun","hance to inflict Stun","and inflicting Stun for"," inflicts Stun on the target","and Stunning them for","causes Stun on all"])));
 //Bot Filters
-document.querySelectorAll('.id_bot_0').forEach(input => input.addEventListener('input', ()=>filter(event,["all allies gain a shield"])));
+document.querySelectorAll('.id_bot_0').forEach(input => input.addEventListener('input', ()=>filter(event,["Bots, max level increases by 30 levels","Defender Bots","Attack Bots"])));
 document.querySelector('.id_bot_1').addEventListener('input', ()=>filter_bots(event));

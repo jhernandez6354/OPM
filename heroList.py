@@ -291,7 +291,6 @@ def HeroLimiter(reader):
     for line in reader:
         row = line.split('\\n')
         if not row[0].startswith("#"): #All of these files start with a commented descriptor.
-            mLimStat={}
             mString={
                 'desc': row[0].split('*')[5],
                 'descval':row[0].split('*')[6],
@@ -312,30 +311,64 @@ def HeroLimiter(reader):
         dLine=None
     return dLine
 
-def HeroBlessSkill(reader):
-    #*288*42*4*3*10456234*10456342*1*1*******2*1*
-    #*57*9*5*1*10456206*10456309*2%,2%,2%*1*1:1,2,3,4,5,6*9*23,200;33,200;43,200*23,200;33,200;43,200*****
+def HeroBless(reader):
+    #*267*84*1*prop,9426,1*2*1,3,46*
     dLine={}
     for line in reader:
         row = line.split('\\n')
         if not row[0].startswith("#"): #All of these files start with a commented descriptor.
-            mBlessStat={}
-            mString={
-                'id': row[0].split('*')[2],
-                'descval':row[0].split('*')[6],
-                row[0].split('*')[3]:{
-                'perct': row[0].split('*')[6],
-                'hp': row[0].split('*')[4].split(';')[0].split(',')[1],
-                'atk': row[0].split('*')[4].split(';')[1].split(',')[1],
-                'def': row[0].split('*')[4].split(';')[2].split(',')[1]
-                
-            }}
-            try: #The first entry for the individual skill will throw an error without this.
-                dLine[row[0].split('*')[2]].update(mString) #Then set the base skill id as the key for all skill level ids.
+            try:
+                #Not all heroes have a third blessing.
+                #Rare and Uncommon heroes dont' get any blessings.
+                #Epic+ Heroes all get the first two blessings and the first blessing is always the same.
+                #Typed heroes get uncommon rank for the PvP blessing, Complete Heroes get Rare rank, and Old World heroes get Epic rank.
+                special_blessing=row[0].split('*')[6].split(',')[2]
+                #There are always seven entries, but the blessing ID and hero with be the same for all seven, so we only want the first one.
+                if row[0].split('*')[2] not in dLine.keys():
+                    dLine[row[0].split('*')[2]]=special_blessing #Create a map list of all blessing levels and associate them to a single skill id.
             except:
-                dLine[row[0].split('*')[2]]=mString #Create a map list of all skill levels and associate them to a single skill id.
+                pass
     try:
        dLine
+    except:
+        dLine=None
+    return dLine
+
+def HeroBlessSkill(reader):
+    #*288*42*4*3*10456234*10456342*1*1*******2*1*
+    #*57*9*5*1*10456206*10456309*2%,2%,2%*1*1:1,2,3,4,5,6*9*23,200;33,200;43,200*23,200;33,200;43,200*****
+    dLine={}
+    d_bless={}
+    #To tie this to a hero, we need data from HeroBless file as well.
+    map_reader = codecs.open("csv/HeroBless.csv", 'r', encoding='utf-8')
+    bless_map=HeroBless(map_reader)
+    for line in reader:
+        row = line.split('\\n')
+        if not row[0].startswith("#"): #All of these files start with a commented descriptor.
+            #First we want to loop our blessings to create a dictionary of them based on their ID.
+            #That way, we can associate the values for all seven ranks to the description within the herostats file.
+            v_bless={
+                "bless_name": row[0].split('*')[5],
+                "bless_desc":row[0].split('*')[6],
+                "bless_desc_val":{
+                    row[0].split('*')[8]:row[0].split('*')[7]
+                } #This will be a comma separated string that we will need to parse into our bless_desc
+            }
+            #try: #We simply need to add the new blessing value if the first blessing already exists as the name and description won't change.
+            if row[0].split('*')[2] in d_bless:
+                d_bless[row[0].split('*')[2]]['bless_desc_val'].update({row[0].split('*')[8]:row[0].split('*')[7]}) #Then set the base blessing id as the key for all blessing level ids.
+            else:
+            #except:
+                d_bless[row[0].split('*')[2]]=v_bless #Create a map list of all blessing levels and associate them to a single blessing id.
+    
+        for key, blessing in bless_map.items(): # { hero_id, blessing_id }
+            if blessing == row[0].split('*')[2]:
+                try: #The first entry for the individual blessing will throw an error without this.
+                    dLine[key].update(d_bless[blessing]) #Then set the base blessing id as the key for all blessing level ids.
+                except:
+                    dLine[key]=d_bless[blessing] #Create a map list of all blessing levels and associate them to a single skill id.
+    try:
+        dLine
     except:
         dLine=None
     return dLine
@@ -728,9 +761,13 @@ def mapStats(dStats):
             except:
                 limiter=None
             try:
-                blessing=dStats['HeroBlessing'][vStat['heroid']]
+                blessing=dStats['HeroBlessingSkill'][vStat['heroid']]["blessing"]
+                mbless={
+                    "name": blessing["bless_name"],
+                    "desc": blessing["bless_desc"]
+                }
             except:
-                blessing=None
+                mbless=None
             try:
                 lStat={
                     'base': {
@@ -754,7 +791,7 @@ def mapStats(dStats):
                     },
                     'quality': dStats['HeroQualityProperty'][vStat['heroid']],
                     'grade': dStats['HeroGradeProperty'][vStat['heroid']], #This is not yet implemented as of August 2021, but I'm putting it in now before I forget how to read/write my script.
-                    'blessing': blessing,
+                    'blessing': mbless,
                     'limiter': limiter  
                 }
             except:
@@ -801,7 +838,7 @@ def mapHero(dMap):
     mHero=[]
     for key, hero in dMap['Hero'].items(): #First Loop though the list of heroes as your primary list
         name=dMap[lang].get(hero['heronameid'])
-        aHero={"hero": name,"details":{"skill":[],"talent":[],"limit":""}}
+        aHero={"hero": name,"details":{"skill":[],"talent":[],"limit":"","blessing":{}}}
         if hero['hero'] is False: #Bots only have 2 skills and no talents.
             limit=2
         else: #Heroes that noramally start at elite quality have 4 skills and 1 talent.
@@ -838,6 +875,7 @@ def mapHero(dMap):
                     aHero["details"]['talent'].update(talent)
                 except:
                     aHero["details"]['talent']=talent
+            #For the blessings and limiter, we set the key to the hero ID to make it easy to link back to the hero.
             #Now trying to get limit breakthrough
                 try:
                     dLimit=dMap['HeroLimiter'].get(hero['heroid'])
@@ -850,13 +888,27 @@ def mapHero(dMap):
                     for key, val in enumerate(dLimit['descval'].split(',')):
                         limitDesc=limitDesc.replace("{"+str(key)+"}", val)
                     aHero["details"]['limit']=(limitDesc)
+            #And now the blessing...
+                try:
+                    dBless=dMap['HeroBlessSkill'].get(hero['heroid'])
+                    bless_name=dMap[lang].get(dBless['bless_name']).replace('\\n','')
+                    bless_desc=dMap[lang].get(dBless['bless_desc']).replace('\\n','')
+                    if bless_desc is None:
+                        dBless=None
+                except:
+                    dBless=None
+                if dBless is not None: #Yet I'm a lazy bastard and this works, so I'm using it for blessings as well.
+                    for key, blessing in enumerate(dBless['bless_desc_val']['7'].split(',')):
+                        bless_desc=bless_desc.replace("{"+str(key)+"}", blessing)
+                    aHero["details"]['blessing']=({"bless_name":bless_name,"bless_desc":bless_desc})
+                    print(aHero)
         try:
             mHero.append(aHero)
         except:
             mHero=aHero
     return (mHero)
 
-adb_pull_files()
+#adb_pull_files()
 dMap=genMappings()
 print("Success! Getting the list of heroes")
 mHero=mapHero(dMap)

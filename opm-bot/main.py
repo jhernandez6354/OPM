@@ -4,9 +4,12 @@ import requests
 import json
 import re
 from discord.ext import commands,tasks
+import os 
+from dotenv import load_dotenv
 
 import asyncio # To get the exception
 
+load_dotenv()
 
 client = discord.Client()
 bot = commands.Bot(command_prefix='$')
@@ -17,8 +20,8 @@ def cleanhtml(raw_html):
 
 @bot.command(name='hero')
 async def hero(message, vHero):
-  heroData = requests.get("https://opmdata.com/hero-list")
-  heroStats = requests.get("https://opmdata.com/hero-stats")
+  heroData = requests.get("https://thelazygame.com/hero-list")
+  heroStats = requests.get("https://thelazygame.com/hero-stats")
   json_data = json.loads(heroData.text)
   stats_data = json.loads(heroStats.text)
   for hero in json_data:
@@ -57,5 +60,4 @@ async def on_message(message):
     await hero(message, message.content.split(' ',1)[1])
 
 
-client.run('ODczMDU1Mjk5Mjk5MzE1NzEy.YQy2Gw.CVILbgLohRaSvOAFWnLaZWxG1ko')  
-#https://discord.com/api/oauth2/authorize?client_id=873055299299315712&permissions=0&scope=bot%20applications.commands
+client.run(os.getenv("DISCORD_TOKEN"))  

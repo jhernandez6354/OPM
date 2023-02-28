@@ -20,8 +20,8 @@ def cleanhtml(raw_html):
 
 @bot.command(name='hero')
 async def hero(message, vHero):
-  heroData = requests.get("https://thelazygame.com/hero-list")
-  heroStats = requests.get("https://thelazygame.com/hero-stats")
+  heroData = requests.get("https://api.thelazygame.com/hero-list")
+  heroStats = requests.get("https://api.thelazygame.com/hero-stats")
   json_data = json.loads(heroData.text)
   stats_data = json.loads(heroStats.text)
   for hero in json_data:

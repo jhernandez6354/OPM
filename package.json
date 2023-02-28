@@ -1,0 +1,25 @@
+{
+  "name": "opmdata",
+  "version": "1.0.2",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jhernandez6354/OPM.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jhernandez6354/OPM/issues"
+  },
+  "homepage": "https://github.com/jhernandez6354/OPM#readme",
+  "description": "",
+  "dependencies": {
+    "connect": "^3.7.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  }
+}

@@ -1,12 +1,18 @@
+import boto3
 import json
 import codecs
 import re #Used to remove the <material markup
 from ppadb.client import Client as AdbClient
 import os
+from dotenv import load_dotenv
 #This assumes these files exist in the csv folder and will save them to their own maps to be used later.
 #The files in \Storage\Android\data\com.alpha.mpsen.android\cache\DiffConfig and are subject to change weekly.
 lang='Default_English'
 
+b_s3_upload=True #I'm trying to do as little work with this as possible so I have the script upload the files for me to s3.
+    #Set this flag to false if you don't want it attempt s3 uploads, which will fail unless you have access keys in your .env file.
+bucket="elasticbeanstalk-us-east-1-422356278867"
+region="us-east-1"
 #BaseStats               HeroQualityProperty, HeroLevel, and Hero
 #Essense Laboratory      HeroAcademyLevel
 #Class Essence           HeroJobLevel
@@ -822,7 +828,6 @@ def mapStats(dStats):
 def mapEquip(dEquip):
     lEquip={}
     for key, gear in dMap['Equip'].items():
-        
         aEquip={
             'quality': gear['quality'],
             'characteristic': gear['characteristic'],
@@ -833,6 +838,14 @@ def mapEquip(dEquip):
         except:
              lEquip[dMap[lang].get(key)]=aEquip
     return lEquip
+
+def s3_upload(file,data):
+    s3 = boto3.resource('s3',aws_access_key_id=os.getenv("access_key"), aws_secret_access_key=os.getenv('secret_key'))
+    s3object = s3.Object(bucket, 'data/'+file)
+
+    s3object.put(
+        Body=(bytes(json.dumps(data).encode('UTF-8')))
+    )
 
 def mapHero(dMap):
     mHero=[]
@@ -901,7 +914,6 @@ def mapHero(dMap):
                     for key, blessing in enumerate(dBless['bless_desc_val']['7'].split(',')):
                         bless_desc=bless_desc.replace("{"+str(key)+"}", blessing)
                     aHero["details"]['blessing']=({"bless_name":bless_name,"bless_desc":bless_desc})
-                    print(aHero)
         try:
             mHero.append(aHero)
         except:
@@ -916,6 +928,7 @@ print("Success! Now retrieving the hero stats")
 mStats=mapStats(dMap) #Currently I feel that using separate json files for the data would be more practical than trying to shove all the data into one file.
 print("One more to go! Getting the list of equippable gear")
 mEquip=mapEquip(dMap)
+load_dotenv()
 
 with open(data_path+'herolist.json', 'w') as f:
     json.dump(mHero,f)
@@ -924,8 +937,7 @@ with open(data_path+'herostats.json', 'w') as f:
 with open(data_path+'heroequip.json', 'w') as f:
     json.dump(mEquip,f)
 
-
-#I need somewhere to put the total class levels 
-#'level':[
-#    dStats['HeroAcademyLevel'][vStat['heroid']]
-#]
+if b_s3_upload is True:
+    s3_upload("herolist.json",mHero)
+    s3_upload("herostats.json",mStats)
+    s3_upload("heroequip.json",mEquip)

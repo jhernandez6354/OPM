@@ -1,7 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const port = process.env.PORT || 443;
+const port = process.env.PORT || 8080;
 
 const server = http.createServer((req, res) => {
     let filePath = path.join(

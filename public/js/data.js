@@ -100,9 +100,26 @@ $(document).ready(function(){
         success: function(data){
             tablearray.push('<div class="table"><div class="table-header"><div class="header__item"><a id="normal">Normal Skill</a></div><div class="header__item"><a>Active Skill</a></div><div class="header__item"><a id="passive1" >Passive Skill 1</a></div><div class="header__item"><a id="passive2" >Passive Skill 2</a></div><div class="header__item"><a id="talent" >Talent</a></div><div class="header__item"><a id="limit" >Limiter</a></div><div class="header__item"><a id="blessing" >Blessing</a></div></div><div class="table-content">')
             for (id = 0; id < data.length; id++) { //get a count of heroes and assign them to an index.
-                hName=data[id].hero;
+                if (data[id].details.characteristic == '' && data[id].details.type =='Weapon'){
+                    v_type="bot-weapon"
+                }else{
+                    v_type=data[id].details.type
+                };
+                v_characteristic=(data[id].details.characteristic);
+                v_role=(data[id].details.role);
+                v_class=(data[id].details.class);
                 tablearray.push('<details class="hero-details">')
-                tablearray.push("<summary><span class=\"hero\">"+ hName+"</span></summary>");
+                tablearray.push("<summary><span class=\"hero\">"+ data[id].hero+"");
+                tablearray.push("<img src=\"images\\"+ (v_type).toLowerCase() +".png\" title=\""+v_type+"\"/>");
+                if (v_characteristic != "None") {
+                    tablearray.push("<img src=\"images\\"+ v_characteristic.toLowerCase() +".png\" title=\""+v_characteristic+"\"/>");
+                };
+                if (v_class != "None") {
+                    tablearray.push("<img src=\"images\\"+ v_role.toLowerCase() +".png\" title=\""+v_role+"\"/>");
+                    tablearray.push("<img src=\"images\\"+ v_class.toLowerCase() +".png\"title=\""+v_class+"\"/></span></summary>");
+                } else{
+                    tablearray.push("<img src=\"images\\"+ v_role.toLowerCase() +".png\"title=\""+v_role+"\"/></span></summary>");
+                };
                 tablearray.push('<div class="table-row">')
                 var skill = skills(data[id].details.skill);
                 var talent = talents(data[id].details.talent);
@@ -113,6 +130,7 @@ $(document).ready(function(){
                 tablearray.push("<div class=\"table-data\">" + limit+"</div>");
                 tablearray.push(blessing);
                 tablearray.push('</div></details>')
+                v_characteristic,v_role,v_class,v_type=null
             }
             tablearray.push("</div></div>");
             document.getElementById("container").innerHTML = tablearray.join('');

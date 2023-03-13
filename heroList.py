@@ -1,12 +1,19 @@
+import boto3
 import json
 import codecs
 import re #Used to remove the <material markup
 from ppadb.client import Client as AdbClient
 import os
+from dotenv import load_dotenv
 #This assumes these files exist in the csv folder and will save them to their own maps to be used later.
 #The files in \Storage\Android\data\com.alpha.mpsen.android\cache\DiffConfig and are subject to change weekly.
 lang='Default_English'
-
+adb_pull=False #I pull the files from the game generated csv files using Nox. 
+    # Since I only use Nox for this, I only set this to true when I want to pull the new data every update (2 weeks).
+b_s3_upload=True #I'm trying to do as little work with this as possible so I have the script upload the files for me to s3.
+    #Set this flag to false if you don't want it attempt s3 uploads, which will fail unless you have access keys in your .env file.
+bucket="elasticbeanstalk-us-east-1-422356278867"
+region="us-east-1"
 #BaseStats               HeroQualityProperty, HeroLevel, and Hero
 #Essense Laboratory      HeroAcademyLevel
 #Class Essence           HeroJobLevel
@@ -44,10 +51,14 @@ lFiles=[  #There should be a function that matches each name in this list, which
     'DroidStar'
 ]
 
-mBotType={ #I recorded this, but Hero isn't reliable for this data, so I need to find it somewhere else.
+mBotType={
     1: 'Weapon',
     2: 'Future',
     3: 'Technical'
+}
+
+mBotRole={ #Every bot role right now is "Damage Over Time", but I suspect that will change.
+    0: 'Damage over Time'
 }
 
 mType={
@@ -217,7 +228,7 @@ def Hero(reader):
         if not row[0].startswith("#"): #All of these files start with a commented descriptor.
             hero=True  
             row=row[0].split('*')
-            if int(row[1]) >= 20000: #Bots are in this range
+            if int(row[1]) >= 20010: #Defender Bots are in this range
                 hero=False    
             if int(row[1]) < 2000 and row[1] != '' and row[9] not in invalidHeroes and int(row[2]) > 2: #10000 heroes are unplayable bosses or test heroes. Also, exclude heroes that don't have a name. Finally, exclude any heroes of "Quality" 2 or less.
                 #['', '1', '3', '3', '1', '5', '8', '200110001', '2001042', 'fukegao', 'fukegao', '', '', '10012', '10011,10013,10014', '', '10011,10012,10013,10014', '496', '130', '46', '500', '0', ''
@@ -252,6 +263,8 @@ def Hero(reader):
                     'hp': row[17],
                     'atk': row[18],
                     'def': row[19],
+                    'type': mBotType[int(row[39])],
+                    'role': mBotRole[int(row[40])],
                     'skill0': row[16].split(',')[0],
                     'skill1':  str(int(row[16].split(',')[0])+1)
                 }
@@ -734,7 +747,6 @@ def mapSkills(dSkills,name):
         except Exception as error:
             print(f"Failed to pull the skill description for {name}: {vSkill}")
             print(error)
-            quit()
         sDesc=((re.sub('<material.*?>', '', sDesc).replace('<color=#',"<font color=#")).replace("</color>","</font>")).replace('</material>','')
         lSkill={
             "level": vSkill["level"],
@@ -808,6 +820,7 @@ def mapStats(dStats):
                     'ATK': vStat['atk'],
                     'DEF': vStat['def'],
                 },
+                'type': vStat['type'],
                 'level': dStats['DroidLevelGrowth'][vStat['heroid']],
                 'quality': dStats['DroidStar'][vStat['heroid']]
             }
@@ -822,7 +835,6 @@ def mapStats(dStats):
 def mapEquip(dEquip):
     lEquip={}
     for key, gear in dMap['Equip'].items():
-        
         aEquip={
             'quality': gear['quality'],
             'characteristic': gear['characteristic'],
@@ -834,11 +846,40 @@ def mapEquip(dEquip):
              lEquip[dMap[lang].get(key)]=aEquip
     return lEquip
 
+def s3_upload(file,data):
+    s3 = boto3.resource('s3',aws_access_key_id=os.getenv("access_key"), aws_secret_access_key=os.getenv('secret_key'))
+    s3object = s3.Object(bucket, 'data/'+file)
+
+    s3object.put(
+        Body=(bytes(json.dumps(data).encode('UTF-8')))
+    )
+
 def mapHero(dMap):
     mHero=[]
     for key, hero in dMap['Hero'].items(): #First Loop though the list of heroes as your primary list
         name=dMap[lang].get(hero['heronameid'])
-        aHero={"hero": name,"details":{"skill":[],"talent":[],"limit":"","blessing":{}}}
+        try:
+            #Every hero has a type and a role, but not all have characteristics or a class
+            v_characteristic=hero["characteristic"]
+        except:
+            v_characteristic="None"
+        try:
+            v_class=hero["class"]
+        except:
+            v_class="None"
+        aHero={
+            "hero": name,
+            "details":{
+                "role":hero["role"],
+                'type':hero["type"],
+                "characteristic":v_characteristic,
+                "class": v_class,
+                "skill":[],
+                "talent":[],
+                "limit":"",
+                "blessing":{}
+            }
+        }
         if hero['hero'] is False: #Bots only have 2 skills and no talents.
             limit=2
         else: #Heroes that noramally start at elite quality have 4 skills and 1 talent.
@@ -901,14 +942,14 @@ def mapHero(dMap):
                     for key, blessing in enumerate(dBless['bless_desc_val']['7'].split(',')):
                         bless_desc=bless_desc.replace("{"+str(key)+"}", blessing)
                     aHero["details"]['blessing']=({"bless_name":bless_name,"bless_desc":bless_desc})
-                    print(aHero)
         try:
             mHero.append(aHero)
         except:
             mHero=aHero
     return (mHero)
 
-#adb_pull_files()
+if adb_pull is True:
+    adb_pull_files()
 dMap=genMappings()
 print("Success! Getting the list of heroes")
 mHero=mapHero(dMap)
@@ -916,6 +957,7 @@ print("Success! Now retrieving the hero stats")
 mStats=mapStats(dMap) #Currently I feel that using separate json files for the data would be more practical than trying to shove all the data into one file.
 print("One more to go! Getting the list of equippable gear")
 mEquip=mapEquip(dMap)
+load_dotenv()
 
 with open(data_path+'herolist.json', 'w') as f:
     json.dump(mHero,f)
@@ -924,8 +966,7 @@ with open(data_path+'herostats.json', 'w') as f:
 with open(data_path+'heroequip.json', 'w') as f:
     json.dump(mEquip,f)
 
-
-#I need somewhere to put the total class levels 
-#'level':[
-#    dStats['HeroAcademyLevel'][vStat['heroid']]
-#]
+if b_s3_upload is True:
+    s3_upload("herolist.json",mHero)
+    s3_upload("herostats.json",mStats)
+    s3_upload("heroequip.json",mEquip)

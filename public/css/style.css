@@ -118,6 +118,13 @@ h1, h2, h3, h4, h5, h6 {
     cursor: pointer;
   }
 
+  img {
+    width: 20px;
+    height: 20px;
+    margin-left: 8px;
+    margin-bottom: 4px
+  }
+
   details summary::-webkit-details-marker {
     display:none;
   }

@@ -3,3 +3,6 @@ opm-bot/
 .env
 AssetStudio/
 node_modules/
+hero_data/
+hero_data/herolist.json
+hero_data/herostats.json

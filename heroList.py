@@ -7,7 +7,7 @@ import os
 from dotenv import load_dotenv
 #This assumes these files exist in the csv folder and will save them to their own maps to be used later.
 #The files in \Storage\Android\data\com.alpha.mpsen.android\cache\DiffConfig and are subject to change weekly.
-lang='Default_English'
+
 adb_pull=False #I pull the files from the game generated csv files using Nox. 
     # Since I only use Nox for this, I only set this to true when I want to pull the new data every update (2 weeks).
 b_s3_upload=True #I'm trying to do as little work with this as possible so I have the script upload the files for me to s3.
@@ -29,9 +29,9 @@ region="us-east-1"
 #Bots Quality            DroidStar
 #Potential Chip          Potential Chips /Not Yet Added to data
 
+lang_list=['Default_English','Default_Spanish','Default_Russian']
 
 lFiles=[  #There should be a function that matches each name in this list, which tell genMappings how to read to file.
-    lang,
     'HeroBlessSkill',
     'HeroLimiter',
     'HeroSkillDesc',
@@ -206,7 +206,10 @@ def genMappings():
         dFiles[fName]=eval(fName)(reader)
     return dFiles
 
-def Default_English(reader):
+def genLang(lang):
+    file_name="csv/"+lang+'.csv' 
+    print("Mapping out "+ file_name)
+    reader = codecs.open(file_name, 'r', encoding='utf-8')
     #Standard formatting: *10421573*Metal Bat Rare Card Frame *
     dText={}
     for line in reader:
@@ -216,7 +219,7 @@ def Default_English(reader):
             stringText=row[0].split('*')[2]
             dText[stringID]=stringText
     try:
-       dText
+        dText
     except:
         dText=None
     return dText
@@ -230,7 +233,7 @@ def Hero(reader):
             row=row[0].split('*')
             if int(row[1]) >= 20010: #Defender Bots are in this range
                 hero=False    
-            if int(row[1]) < 2000 and row[1] != '' and row[9] not in invalidHeroes and int(row[2]) > 2: #10000 heroes are unplayable bosses or test heroes. Also, exclude heroes that don't have a name. Finally, exclude any heroes of "Quality" 2 or less.
+            if int(row[1]) < 2000 and row[1] != '' and row[9] not in invalidHeroes and int(row[2]) > 2: #10000 heroes are unplayable bosses or test heroes. Also, exclude heroes that don't have a name. Finally, exclude any heroes of "Quality" 2 or less because they will never become mythic+.
                 #['', '1', '3', '3', '1', '5', '8', '200110001', '2001042', 'fukegao', 'fukegao', '', '', '10012', '10011,10013,10014', '', '10011,10012,10013,10014', '496', '130', '46', '500', '0', ''
                 # , 'attack,skill', '10010', '10003,20001,30004', '2001043', '10015', '0', '393', '33,25,1', '2.0.23', '', '1', '1', '4', '61,44,0.9', '0', '5,-22', '0', '2', '\n']
                 if  row[9] != '':
@@ -251,10 +254,10 @@ def Hero(reader):
                         'skill1': str(skill+1),
                         'skill2': str(skill+2),
                         'skill3': str(skill+3),
-                        'talent': str(skill+4)#I know it's stupid, but at least they are consistent.
+                        'talent': str(skill+4)#I know it's a dumb way to get skills and talents, it works.
                     }
                     dLine[row[1]]=mString
-            if hero is False and int(row[14]) != 0 and int(row[1]) > 1 and int(row[1]) > 20000: # Exclude bots that dont' have skills and bots less than "blue" quality
+            if hero is False and int(row[14]) != 0 and int(row[1]) > 1 and int(row[1]) > 20000: # Exclude bots that don't have skills and bots less than "blue" quality
                 mString={
                     'hero': False,
                     'heroid':row[1],
@@ -730,20 +733,20 @@ def CollectGroupAddition(reader): #Hero Cards, this id the final calculation whe
 def mapSkills(dSkills,name):
     mSkill={}
     for key, vSkill in dSkills.items():
-        skill_name=dMap[lang].get(vSkill['name'])
+        skill_name=d_hero[lang].get(vSkill['name'])
         try:
             if ',' not in vSkill['perct'] and ',' not in vSkill['val']:
                 if vSkill['perct'] != '': #More often than not, we need to update the dynamic value for each skill level.
-                    sDesc=((dMap[lang].get(vSkill['desc']))).format(vSkill['perct']).replace('\\n','')
+                    sDesc=((d_hero[lang].get(vSkill['desc']))).format(vSkill['perct']).replace('\\n','')
                 elif vSkill['val'] != '':
-                    sDesc=((dMap[lang].get(vSkill['desc']))).format(vSkill['val']).replace('\\n','')
+                    sDesc=((d_hero[lang].get(vSkill['desc']))).format(vSkill['val']).replace('\\n','')
                 else:
-                    sDesc=(dMap[lang].get(vSkill['desc']))
+                    sDesc=(d_hero[lang].get(vSkill['desc']))
             else:
                 if vSkill['perct'] != '': #We need to update the dynamic value for each skill level and we don't know how many arguments are going to be in the string.
-                    sDesc=((dMap[lang].get(vSkill['desc']))).format(*vSkill['perct'].split(',')).replace('\\n','')
+                    sDesc=((d_hero[lang].get(vSkill['desc']))).format(*vSkill['perct'].split(',')).replace('\\n','')
                 elif vSkill['val'] != '':
-                    sDesc=((dMap[lang].get(vSkill['desc']))).format(*vSkill['val'].split(',')).replace('\\n','')
+                    sDesc=((d_hero[lang].get(vSkill['desc']))).format(*vSkill['val'].split(',')).replace('\\n','')
         except Exception as error:
             print(f"Failed to pull the skill description for {name}: {vSkill}")
             print(error)
@@ -825,7 +828,7 @@ def mapStats(dStats):
                 'quality': dStats['DroidStar'][vStat['heroid']]
             }
             pass
-        name=dMap[lang].get(vStat['heronameid']) #Like in mapHero, we need to bind the stats to its respective hero.
+        name=d_hero[lang].get(vStat['heronameid']) #Like in mapHero, we need to bind the stats to its respective hero.
         try:
             mStat[name].append(lStat)
         except:
@@ -834,16 +837,16 @@ def mapStats(dStats):
 
 def mapEquip(dEquip):
     lEquip={}
-    for key, gear in dMap['Equip'].items():
+    for key, gear in d_hero['Equip'].items():
         aEquip={
             'quality': gear['quality'],
             'characteristic': gear['characteristic'],
             'stats': gear['stats'],
         }
         try:
-            lEquip[dMap[lang].get(key)].update(aEquip)
+            lEquip[d_hero[lang].get(key)].update(aEquip)
         except:
-             lEquip[dMap[lang].get(key)]=aEquip
+             lEquip[d_hero[lang].get(key)]=aEquip
     return lEquip
 
 def s3_upload(file,data):
@@ -854,10 +857,14 @@ def s3_upload(file,data):
         Body=(bytes(json.dumps(data).encode('UTF-8')))
     )
 
-def mapHero(dMap):
+def mapHero(d_hero):
     mHero=[]
-    for key, hero in dMap['Hero'].items(): #First Loop though the list of heroes as your primary list
-        name=dMap[lang].get(hero['heronameid'])
+    for key, hero in d_hero['Hero'].items(): #First Loop though the list of heroes as your primary list
+        name=d_hero[lang].get(hero['heronameid'])
+        b_active=True #A flag for the website to indicate if the character is in the works, but not yet released.
+        if name is None: #WIP: This works until it doesn't; then I'll reevaluate the character name indexing.
+            name=d_hero[lang].get("200511"+str(key)).split(" Shard")[0]
+            b_active=False
         try:
             #Every hero has a type and a role, but not all have characteristics or a class
             v_characteristic=hero["characteristic"]
@@ -877,7 +884,8 @@ def mapHero(dMap):
                 "skill":[],
                 "talent":[],
                 "limit":"",
-                "blessing":{}
+                "blessing":{},
+                "active": b_active
             }
         }
         if hero['hero'] is False: #Bots only have 2 skills and no talents.
@@ -886,10 +894,10 @@ def mapHero(dMap):
             limit=4
         count=0
         skill=[]
-        if name not in invalidHeroes and name is not None:
+        if name not in invalidHeroes and name is not None and b_active is True:
             while(count<limit): 
                 try:
-                    skill.append(mapSkills(dMap['HeroSkillDesc'].get(hero['skill'+str(count)]),name))
+                    skill.append(mapSkills(d_hero['HeroSkillDesc'].get(hero['skill'+str(count)]),name))
                 except Exception as error:
                     print(error)
                     #I didn't bother having it scan any heroes without at least 4 abilities as they are not worth anything past stage 25 and are useless in tournaments.
@@ -906,7 +914,7 @@ def mapHero(dMap):
                 talent=[]
             #Trying to get the list of Talents    
                 try:
-                    talent.append(mapSkills(dMap['HeroSkillDesc'].get(hero['talent']),name))
+                    talent.append(mapSkills(d_hero['HeroSkillDesc'].get(hero['talent']),name))
                 except Exception as error:
                     print(error)
                     #I didn't bother having it scan any heroes without at least 4 abilities as they are not worth anything past stage 25 and are useless in tournaments.
@@ -919,8 +927,8 @@ def mapHero(dMap):
             #For the blessings and limiter, we set the key to the hero ID to make it easy to link back to the hero.
             #Now trying to get limit breakthrough
                 try:
-                    dLimit=dMap['HeroLimiter'].get(hero['heroid'])
-                    limitDesc=dMap[lang].get(dLimit['desc']).replace('\\n','')
+                    dLimit=d_hero['HeroLimiter'].get(hero['heroid'])
+                    limitDesc=d_hero[lang].get(dLimit['desc']).replace('\\n','')
                     if limitDesc is None:
                         dLimit=None
                 except:
@@ -931,9 +939,9 @@ def mapHero(dMap):
                     aHero["details"]['limit']=(limitDesc)
             #And now the blessing...
                 try:
-                    dBless=dMap['HeroBlessSkill'].get(hero['heroid'])
-                    bless_name=dMap[lang].get(dBless['bless_name']).replace('\\n','')
-                    bless_desc=dMap[lang].get(dBless['bless_desc']).replace('\\n','')
+                    dBless=d_hero['HeroBlessSkill'].get(hero['heroid'])
+                    bless_name=d_hero[lang].get(dBless['bless_name']).replace('\\n','')
+                    bless_desc=d_hero[lang].get(dBless['bless_desc']).replace('\\n','')
                     if bless_desc is None:
                         dBless=None
                 except:
@@ -950,23 +958,35 @@ def mapHero(dMap):
 
 if adb_pull is True:
     adb_pull_files()
-dMap=genMappings()
-print("Success! Getting the list of heroes")
-mHero=mapHero(dMap)
-print("Success! Now retrieving the hero stats")
-mStats=mapStats(dMap) #Currently I feel that using separate json files for the data would be more practical than trying to shove all the data into one file.
-print("One more to go! Getting the list of equippable gear")
-mEquip=mapEquip(dMap)
-load_dotenv()
+for lang in lang_list:
+    if lang == 'Default_English':
+        f_list="herolist"
+        f_stats="herostats"
+        f_equip="heroequip"
+    else:
+        lang_name=lang.split("_")[1].lower()
+        f_list="herolist-"+lang_name
+        f_stats="herostats-"+lang_name
+        f_equip="heroequip-"+lang_name
+    
+    d_hero=genMappings()
+    d_hero[lang]=(genLang(lang))
+    print("Success! Getting the list of heroes")
+    mHero=mapHero(d_hero)
+    print("Success! Now retrieving the hero stats")
+    mStats=mapStats(d_hero) #Currently I feel that using separate json files for the data would be more practical than trying to shove all the data into one file.
+    print("One more to go! Getting the list of equippable gear")
+    mEquip=mapEquip(d_hero)
+    load_dotenv()
 
-with open(data_path+'herolist.json', 'w') as f:
-    json.dump(mHero,f)
-with open(data_path+'herostats.json', 'w') as f:
-    json.dump(mStats,f)
-with open(data_path+'heroequip.json', 'w') as f:
-    json.dump(mEquip,f)
+    with open(data_path+f_list+'.json', 'w') as f:
+        json.dump(mHero,f)
+    with open(data_path+f_stats+'.json', 'w') as f:
+        json.dump(mStats,f)
+    with open(data_path+f_equip+'.json', 'w') as f:
+        json.dump(mEquip,f)
 
-if b_s3_upload is True:
-    s3_upload("herolist.json",mHero)
-    s3_upload("herostats.json",mStats)
-    s3_upload("heroequip.json",mEquip)
+    if b_s3_upload is True:
+        s3_upload(f_list+'.json',mHero)
+        s3_upload(f_stats+'.json',mStats)
+        s3_upload(f_equip+'.json',mEquip)

@@ -1,4 +1,4 @@
-var API_URL = 'https://api.thelazygame.com/hero-list';
+var API_URL = 'https://api.thelazygame.com/hero-list-ru';
 function skills (skill){
     var lRow="";
 
@@ -116,14 +116,9 @@ $(document).ready(function(){
                 };
                 if (v_class != "None") {
                     tablearray.push("<img src=\"images\\"+ v_role.toLowerCase() +".png\" title=\""+v_role+"\"/>");
-                    tablearray.push("<img src=\"images\\"+ v_class.toLowerCase() +".png\"title=\""+v_class+"\"/>");
+                    tablearray.push("<img src=\"images\\"+ v_class.toLowerCase() +".png\"title=\""+v_class+"\"/></span></summary>");
                 } else{
-                    tablearray.push("<img src=\"images\\"+ v_role.toLowerCase() +".png\"title=\""+v_role+"\"/>");
-                };
-                if (data[id].details.active == false) {
-                    tablearray.push("<span style=\"font-family:Verdana,Geneva,sans-serif\"><strong><span style=\"color:#e74c3c\">\tUPCOMING</span></strong></span></span></summary>");
-                }else {
-                    tablearray.push("</span></summary>");
+                    tablearray.push("<img src=\"images\\"+ v_role.toLowerCase() +".png\"title=\""+v_role+"\"/></span></summary>");
                 };
                 tablearray.push('<div class="table-row">')
                 var skill = skills(data[id].details.skill);

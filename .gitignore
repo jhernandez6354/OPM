@@ -1,5 +1,5 @@
-csv/*
-opm-bot/.env
+csv/
+opm-bot/
 .env
-AssetStudio/*
-node_modules/*
+AssetStudio/
+node_modules/

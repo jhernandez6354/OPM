@@ -55,20 +55,20 @@ It will post 5 requests at a time, with a limit of 50 requests per second as the
 I added a hard requirement of at least 2 non-special characters for any of the hero searches to prevent server spam.
 When the bot is up and running, you can use the following commands:
 *    English:
-    - Simple - $opm Terrible Tornado
-    - Acronym - $opm TT
-    - Fuzzy - $opm Terr*
+     - Simple - $opm Terrible Tornado
+     - Acronym - $opm TT
+     - Fuzzy - $opm Terr*
 
 *    Russian:
-    - Simple - $opm!ru Штормовой Ветер
-    - Acronym - Not supported
-    - Fuzzy - $opm!ru Штор*
+     - Simple - $opm!ru Штормовой Ветер
+     - Acronym - Not supported
+     - Fuzzy - $opm!ru Штор*
 
 *    Spanish:
-    - Simple - $opm!es Terrible Tornado
-    - Acronym - $opm!es TT 
-    - Fuzzy - $opm!es Torn*
-
+     - Simple - $opm!es Terrible Tornado
+     - Acronym - $opm!es TT 
+     - Fuzzy - $opm!es Torn*
+\
 *    Unreleased Planned Heroes: $opm upcoming
 ***The strings are not case sensitive, but the $opm command is.***
 

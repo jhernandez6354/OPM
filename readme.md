@@ -50,10 +50,9 @@ Open your browser and navigate to https://127.0.0.1. \
 If you have not deployed to AWS, you'll need to update the variable [API_URL](https://github.com/jhernandez6354/OPM/blob/master/public/js/data.js#L1) in the data.js file to use the local data file.
 
 ### OPM-Bot
-This one is relatively old for me and I haven't used it in a while, but I kept it beacause I though of it as relatively useful since most people use Discord for this game.
-
-The OPM Bot can be deployed directly on the same instance as the website, and only requires that the instance have python and the discord python library.
-
+The OPM Bot can be deployed directly on the same instance as the website, and only requires that the instance have python and the discord.py python library and requests.
+It will post 5 requests at a time, with a limit of 50 requests per second as the default rate. \
+I added a hard requirement of at least 2 non-special characters for any of the hero searches to prevent server spam.
 When the bot is up and running, you can use the following commands:
 *    English:
     - Simple - $opm Terrible Tornado

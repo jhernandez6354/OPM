@@ -56,18 +56,21 @@ The OPM Bot can be deployed directly on the same instance as the website, and on
 
 When the bot is up and running, you can use the following commands:
 *    English:
-    - Simple - $hero Terrible Tornado
-    - Acronym - $hero TT
-    - Fuzzy - $hero Terr*
+    - Simple - $opm Terrible Tornado
+    - Acronym - $opm TT
+    - Fuzzy - $opm Terr*
 
 *    Russian:
-    - Simple - $hero!ru Штормовой Ветер
+    - Simple - $opm!ru Штормовой Ветер
     - Acronym - Not supported
-    - Fuzzy - $hero!ru Штор*
+    - Fuzzy - $opm!ru Штор*
 
 *    Spanish:
-    - Simple - $hero!es Terrible Tornado
-    - Acronym - $hero!es TT 
-    - Fuzzy - $hero!es Torn*
+    - Simple - $opm!es Terrible Tornado
+    - Acronym - $opm!es TT 
+    - Fuzzy - $opm!es Torn*
+
+*    Unreleased Planned Heroes: $opm upcoming
+***The strings are not case sensitive, but the $opm command is.***
 
 Again, make sure you have a .env file that in the opm-bot directory with a reference to your bots `DISCORD_TOKEN`.

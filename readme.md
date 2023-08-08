@@ -68,8 +68,8 @@ When the bot is up and running, you can use the following commands:
      - Simple - $opm!es Terrible Tornado
      - Acronym - $opm!es TT 
      - Fuzzy - $opm!es Torn*
-\
-*    Unreleased Planned Heroes: $opm upcoming
+
+*    Unreleased Planned Heroes: $opm upcoming \
 ***The strings are not case sensitive, but the $opm command is.***
 
 Again, make sure you have a .env file that in the opm-bot directory with a reference to your bots `DISCORD_TOKEN`.

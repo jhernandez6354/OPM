@@ -748,8 +748,7 @@ def mapSkills(dSkills,name):
                 elif vSkill['val'] != '':
                     sDesc=((d_hero[lang].get(vSkill['desc']))).format(*vSkill['val'].split(',')).replace('\\n','')
         except Exception as error:
-            print(f"Failed to pull the skill description for {name}: {vSkill}")
-            print(error)
+            print(f"Failed to pull the skill description for {name}")
         sDesc=((re.sub('<material.*?>', '', sDesc).replace('<color=#',"<font color=#")).replace("</color>","</font>")).replace('</material>','')
         lSkill={
             "level": vSkill["level"],
@@ -874,20 +873,6 @@ def mapHero(d_hero):
             v_class=hero["class"]
         except:
             v_class="None"
-        aHero={
-            "hero": name,
-            "details":{
-                "role":hero["role"],
-                'type':hero["type"],
-                "characteristic":v_characteristic,
-                "class": v_class,
-                "skill":[],
-                "talent":[],
-                "limit":"",
-                "blessing":{},
-                "active": b_active
-            }
-        }
         if hero['hero'] is False: #Bots only have 2 skills and no talents.
             limit=2
         else: #Heroes that noramally start at elite quality have 4 skills and 1 talent.
@@ -895,61 +880,91 @@ def mapHero(d_hero):
         count=0
         skill=[]
         if name not in invalidHeroes and name is not None and b_active is True:
-            while(count<limit): 
+            while(count<limit):
                 try:
                     skill.append(mapSkills(d_hero['HeroSkillDesc'].get(hero['skill'+str(count)]),name))
                 except Exception as error:
-                    print(error)
                     #I didn't bother having it scan any heroes without at least 4 abilities as they are not worth anything past stage 25 and are useless in tournaments.
-                    print("Failed while scanning for "+ name + " skills")
+                    name=d_hero[lang].get("200511"+str(key)).split(" Shard")[0]
+                    b_active=False
                     break
                 count +=1
-            try:
-                aHero["details"]['skill'].append(skill)
-            except:
-                aHero["details"]['skill']=skill
-            #Now we need the talent tiers and limit breaks if they have one. Though balance type heroes can go to tier 40, they also only have 4 levels of effects.
-            #I suspect that they might change that in the future, so I programmed this to count the possible talents for each hero.
-            if hero['hero'] is True:
-                talent=[]
-            #Trying to get the list of Talents    
+            aHero={
+                "hero": name,
+                "details":{
+                    "role":hero["role"],
+                    'type':hero["type"],
+                    "characteristic":v_characteristic,
+                    "class": v_class,
+                    "skill":[],
+                    "talent":[],
+                    "limit":"",
+                    "blessing":{},
+                    "active": b_active
+                }
+            }
+            if b_active is True:
                 try:
-                    talent.append(mapSkills(d_hero['HeroSkillDesc'].get(hero['talent']),name))
-                except Exception as error:
-                    print(error)
-                    #I didn't bother having it scan any heroes without at least 4 abilities as they are not worth anything past stage 25 and are useless in tournaments.
-                    print("Failed while scanning for "+ name + " talent")
-                    break
-                try:
-                    aHero["details"]['talent'].update(talent)
+                    aHero["details"]['skill'].append(skill)
                 except:
-                    aHero["details"]['talent']=talent
-            #For the blessings and limiter, we set the key to the hero ID to make it easy to link back to the hero.
-            #Now trying to get limit breakthrough
-                try:
-                    dLimit=d_hero['HeroLimiter'].get(hero['heroid'])
-                    limitDesc=d_hero[lang].get(dLimit['desc']).replace('\\n','')
-                    if limitDesc is None:
+                    aHero["details"]['skill']=skill
+                #Now we need the talent tiers and limit breaks if they have one. Though balance type heroes can go to tier 40, they also only have 4 levels of effects.
+                #I suspect that they might change that in the future, so I programmed this to count the possible talents for each hero.
+                if hero['hero'] is True:
+                    talent=[]
+                #Trying to get the list of Talents    
+                    try:
+                        talent.append(mapSkills(d_hero['HeroSkillDesc'].get(hero['talent']),name))
+                    except Exception as error:
+                        print(error)
+                        #I didn't bother having it scan any heroes without at least 4 abilities as they are not worth anything past stage 25 and are useless in tournaments.
+                        print("Failed while scanning for "+ name + " talent")
+                        break
+                    try:
+                        aHero["details"]['talent'].update(talent)
+                    except:
+                        aHero["details"]['talent']=talent
+                #For the blessings and limiter, we set the key to the hero ID to make it easy to link back to the hero.
+                #Now trying to get limit breakthrough
+                    try:
+                        dLimit=d_hero['HeroLimiter'].get(hero['heroid'])
+                        limitDesc=d_hero[lang].get(dLimit['desc']).replace('\\n','')
+                        if limitDesc is None:
+                            dLimit=None
+                    except:
                         dLimit=None
-                except:
-                    dLimit=None
-                if dLimit is not None: #This part of the code sucks and it really should automatically find the number of values for the limiter, but it's not formatting my strings correctly
-                    for key, val in enumerate(dLimit['descval'].split(',')):
-                        limitDesc=limitDesc.replace("{"+str(key)+"}", val)
-                    aHero["details"]['limit']=(limitDesc)
-            #And now the blessing...
-                try:
-                    dBless=d_hero['HeroBlessSkill'].get(hero['heroid'])
-                    bless_name=d_hero[lang].get(dBless['bless_name']).replace('\\n','')
-                    bless_desc=d_hero[lang].get(dBless['bless_desc']).replace('\\n','')
-                    if bless_desc is None:
+                    if dLimit is not None: #This part of the code sucks and it really should automatically find the number of values for the limiter, but it's not formatting my strings correctly
+                        for key, val in enumerate(dLimit['descval'].split(',')):
+                            limitDesc=limitDesc.replace("{"+str(key)+"}", val)
+                        aHero["details"]['limit']=(limitDesc)
+                #And now the blessing...
+                    try:
+                        dBless=d_hero['HeroBlessSkill'].get(hero['heroid'])
+                        bless_name=d_hero[lang].get(dBless['bless_name']).replace('\\n','')
+                        bless_desc=d_hero[lang].get(dBless['bless_desc']).replace('\\n','')
+                        if bless_desc is None:
+                            dBless=None
+                    except:
                         dBless=None
-                except:
-                    dBless=None
-                if dBless is not None: #Yet I'm a lazy bastard and this works, so I'm using it for blessings as well.
-                    for key, blessing in enumerate(dBless['bless_desc_val']['7'].split(',')):
-                        bless_desc=bless_desc.replace("{"+str(key)+"}", blessing)
-                    aHero["details"]['blessing']=({"bless_name":bless_name,"bless_desc":bless_desc})
+                    if dBless is not None: #Yet I'm a lazy bastard and this works, so I'm using it for blessings as well.
+                        for key, blessing in enumerate(dBless['bless_desc_val']['7'].split(',')):
+                            bless_desc=bless_desc.replace("{"+str(key)+"}", blessing)
+                        aHero["details"]['blessing']=({"bless_name":bless_name,"bless_desc":bless_desc})
+        else:
+            aHero={
+                "hero": name,
+                "details":{
+                    "role":hero["role"],
+                    'type':hero["type"],
+                    "characteristic":v_characteristic,
+                    "class": v_class,
+                    "skill":[],
+                    "talent":[],
+                    "limit":"",
+                    "blessing":{},
+                    "active": b_active
+                }
+            }
         try:
             mHero.append(aHero)
         except:

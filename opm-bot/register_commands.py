@@ -1,7 +1,7 @@
 import requests
 def register_command():
-  APP_ID = "873055299299315712"
-  BOT_TOKEN = "ODczMDU1Mjk5Mjk5MzE1NzEy.GETsMh.jFGQpcQpYJByr6OlVpv_OhprTPxnr9WBuSQS_o"
+  APP_ID = ""
+  BOT_TOKEN = ""
   
   # global commands are cached and only update every hour
   url = f"https://discord.com/api/v10/applications/{APP_ID}/commands"

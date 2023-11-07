@@ -8,12 +8,13 @@ Well, you're in luck, because I did most of the heavy lifting, and you can see t
 
 ## Requirements:
 - Windows PC
-- Noxplayer (https://www.bignox.com/)
-- Node.js (https://nodejs.org/en)
+- [Noxplayer](https://www.bignox.com/)
+- [Node.js](https://nodejs.org/en)
 - Python 3.6+
 
 ## Optional:
 - AWS Account
+- [git scm cli](https://github.com/git-for-windows/git/releases/download/v2.42.0.windows.2/Git-2.42.0.2-64-bit.exe) and [Terraform](https://registry.terraform.io/modules/terraform-aws-modules/ec2-instance/aws/latest)
 - Discord
 - Discord Bot Account
 
@@ -71,5 +72,10 @@ When the bot is up and running, you can use the following commands:
 
 *    Unreleased Planned Heroes: $opm upcoming \
 ***The strings are not case sensitive, but the $opm command is.***
-
 Again, make sure you have a .env file that in the opm-bot directory with a reference to your bots `DISCORD_TOKEN`.
+
+# Setting up the Infrastructure
+For this application, everything needed to run the website is setup through terraform. 
+The first thing you'll need to do is open up powershell as an administrator and run the command:
+`Install-Module -Name AWS.Tools.Common`
+I'm a windows user, which is why the whole thing was configured for that. If you want mac or linux version, you'll have to make version for those within the main.py script

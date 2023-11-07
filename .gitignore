@@ -1,8 +1,8 @@
 csv/
-opm-bot/
 .env
 AssetStudio/
 node_modules/
 hero_data/
-hero_data/herolist.json
-hero_data/herostats.json
+hero_data/*
+
+opm-bot/yarl-1.9.2-cp311-cp311-win_amd64.whl

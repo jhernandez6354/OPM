@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 #This assumes these files exist in the csv folder and will save them to their own maps to be used later.
 #The files in \Storage\Android\data\com.alpha.mpsen.android\cache\DiffConfig and are subject to change weekly.
 
-adb_pull=False #I pull the files from the game generated csv files using Nox. 
+adb_pull=True #I pull the files from the game generated csv files using Nox. 
     # Since I only use Nox for this, I only set this to true when I want to pull the new data every update (2 weeks).
 b_s3_upload=True #I'm trying to do as little work with this as possible so I have the script upload the files for me to s3.
     #Set this flag to false if you don't want it attempt s3 uploads, which will fail unless you have access keys in your .env file.

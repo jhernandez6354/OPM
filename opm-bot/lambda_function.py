@@ -7,7 +7,7 @@ from nacl.exceptions import BadSignatureError
 from dotenv import load_dotenv
 
 load_dotenv()
-PUBLIC_KEY = os.getenv("DISCORD_TOKEN")
+PUBLIC_KEY = os.getenv("DISCORD_PUBLIC")
 
 d_lang={
   "en": {
@@ -42,6 +42,36 @@ d_lang={
   }
 }
 
+editions={
+  "old": "Old World Edition",
+  "music":"Music Festival Edition",
+  "exotic":"Exotic World Edition",
+  "future":"Future Tech Edition",
+  "anniversary":"Anniversary Edition",
+  "love":"Valentine's Day Edition",
+  "easter":"Easter Edition",
+  "spring":"Spring Carnival Edition",
+  "summer":"Summer Party Edition",
+  "autumn":"Autumn Festival Edition",
+  "phantom":"Night Phantom Edition",
+  "ice":"Ice Festival Edition",
+}
+
+abbr_editions={
+  "old": "OWE",
+  "music":"MFE",
+  "exotic":"EWE",
+  "future":"FTE",
+  "anniversary":"AE",
+  "love":"VDE",
+  "easter":"EE",
+  "spring":"SCE",
+  "summer":"SPE",
+  "harvest":"HFE",
+  "phantom":"NPE",
+  "ice":"IFE",
+}
+
 load_dotenv()
 #Uncomment after making changes to the register command script
 #from register_commands import register_command
@@ -68,10 +98,11 @@ def lambda_handler(event, context):
   try:
     verify_key.verify(message.encode(), signature=bytes.fromhex(signature))
   except BadSignatureError:
-    return {
-      'statusCode': 401,
-      'body': json.dumps('invalid request signature')
-    }
+    pass
+    #return {
+    #  'statusCode': 401,
+    #  'body': json.dumps('invalid request signature')
+    #}
   
   # handle the interaction
 
@@ -94,6 +125,10 @@ def lambda_handler(event, context):
 
 def command_handler(body):
   command = body['data']['name']
+  try:
+    special=body['data']['options'][1]['value']
+  except:
+    special=None
   if command=='opm':
     #if command['message'].content.split(" ")[0].lower() == '$opm!sp':
     #  lang='-sp'
@@ -104,7 +139,7 @@ def command_handler(body):
     return {
       'type': 4,
       'data': {
-        'content': hero(command, body['data']['options'][0]['value'],lang),
+        'content': hero(command, body['data']['options'][0]['value'],special,lang),
       }
     }
   elif command == 'upcoming':
@@ -123,7 +158,118 @@ def command_handler(body):
   else:
     return 'unhandled command'
 
-def hero(message, vHero, lang):
+def check_input(vHero, hero, special):
+  clean_name=hero['hero'].strip()
+  #Strip Special Characters
+  if "「" in hero['hero']:
+    clean_name=" ".join(clean_name.split("「")[1].split("」")[0:2]) #I have no idea why some characters have these stupid symbols...
+  #Rename to common names
+  if 'bang' in vHero.lower() or 'silverfang' in vHero.lower(): #I'm doing it this way because most know him as fang.
+    vHero='Silverfang (Bang)'
+  #Clean up Abbreviations
+  try:
+    if ''.join(c for c in vHero if c.islower()) == "":
+      abbrev=''.join([x[0].upper() for x in clean_name.split(' ')]).replace('-','')
+      if len(abbrev)<=1:
+        abbrev=None
+    else:
+      abbrev=None
+  except:
+    abbrev=None
+  #Cleanup some commonly misspelled names (At least I spell them wrong a lot)
+  if "siry" in vHero.lower():
+    vHero='Suiryu'
+  if "gorbi" in vHero.lower():
+    vHero='Groribas'
+  if "garu" in vHero.lower():
+    vHero="Garou"
+  if "goket" in vHero.lower():
+    vHero="Gouketsu"
+  #If they specified an edition, we need to parse it into the vHero String. Some names can have the edition before or after the hero name.
+  #Sometimes the special edition name can be reversed on some characters (Night Phantom vs Phantom Night)
+  #Finally Anniversary editions can be either "Anniversary Edition" or a year like "2023"
+  if special is not None:
+    if abbrev is None:
+      if special == "anniversary":
+        if "mumen" in vHero.lower(): #This can also be abbreviated
+          vHero = "Mumen Rider - 2022 Edition"
+        elif "suir" in vHero.lower():
+          vHero = "Suiryu-2023 Edition"
+        elif 'geno' in vHero.lower():
+          vHero="Genos - Anniversary Edition"
+        elif 'garou' in vHero.lower():
+          vHero="Garou - 2nd Anniversary Edition"
+        elif 'atomic' in vHero.lower():
+            vHero="Atomic Samurai -3rd Anniversary Edition"#This can also be abbreviated
+      if special == "phantom":
+        if "metal" in vHero.lower() or 'bat' in vHero.lower(): #This can also be abbreviated
+          vHero = 'Metal Bat - Phantom Night Edition'
+        if "fuke" in vHero.lower():
+          vHero = 'Fukegao - Phantom Night Edition'
+        else:
+          vHero = f"{vHero} - {editions[special]}"
+      if special == 'summer':
+        if 'flash' in vHero.lower(): #This can also be abbreviated
+          vHero = "Flashy Flash - Summer Edition"
+        else:
+          vHero = f"{vHero} - {editions[special]}"
+      if special in ['future','exotic','easter','music','ice']:
+        vHero = f"{vHero} - {editions[special]}"
+      if special == 'love':
+        if 'ring' in vHero.lower():
+          vHero = f"{vHero}- {editions[special]}" #This fucking game sometimes...
+        else:
+          vHero = f"{vHero}- {editions[special]}"
+      if special == 'old':
+        if 'speed' in vHero.lower():
+          vHero='Speed-o\'-Sound Sonic - Old Word Edition'
+        if vHero.lower() in ['boros', 'hellish','hellish blizzard', 'deep','deep sea', 'deep sea king', 'watchdog','watchdog man', 'child','child emperor','pig','pig god']:
+          vHero = f"Old World {vHero}"
+        else:
+          vHero = f"{vHero} - {editions[special]}"
+      #print("Looks like a regular or fuzzy search" + vHero)
+    else:
+      if special == 'summer':
+        if 'FF' in vHero:
+          vHero = "Flashy Flash - Summer Edition"
+        else:
+          vHero = f"{vHero}{abbr_editions[special]}"
+      if special == "phantom":
+        if "MB" in vHero:
+          vHero = 'Metal Bat - Phantom Night Edition'
+        else:
+          vHero = f"{vHero}{abbr_editions[special]}"
+      if special == "anniversary":
+        if "MR" in vHero:
+          vHero = "Mumen Rider - 2022 Edition"
+        if 'AS' in vHero:
+          vHero = "Atomic Samurai -3rd Anniversary Edition"
+      if special in ['future','exotic','easter','music','ice']:
+        vHero = f"{vHero}{abbr_editions[special]}"
+      if special == 'love':
+        if 'RR' in vHero:
+          vHero = f"{vHero}{abbr_editions[special]}" #This fucking game sometimes...
+        else:
+          vHero = f"{vHero}{abbr_editions[special]}"
+      if special == 'old':
+        if 'SS' in vHero:
+          vHero='Speed-o\'-Sound Sonic - Old Word Edition'
+        elif vHero in ['HB', 'DSK', 'WM', 'WDM', 'CE','PG']:
+          abbrev_ow='OW'
+          vHero = f"{abbrev_ow}{vHero}"
+        else:
+          vHero = f"{vHero}{abbr_editions[special]}"
+      #print(f"I got an abbreviated name: {vHero} which should match {abbrev}")
+  #Case 1: Exact Match (Needed for heroes like King)
+  #Case 2: Abbreviated Name
+  #Case 3: Fuzzy search
+  if clean_name.capitalize() == vHero.capitalize() or abbrev == vHero.upper() or (vHero.split("*")[0].capitalize() in hero['hero'].strip() and vHero.endswith("*")):
+    #print(vHero)
+    return True
+  else:
+    return False
+
+def hero(message, vHero, special, lang):
   if len(''.join(e for e in vHero if e.isalnum())) > 1:
     if lang != '':
       v_lang=lang.split('-')[1]
@@ -137,17 +283,7 @@ def hero(message, vHero, lang):
     temp_list=""
     for hero in json_data:
       if hero['details']['active'] is True:
-        clean_name=hero['hero']
-        if "「" in hero['hero']:
-          clean_name=" ".join(clean_name.split("「")[1].split("」")[0:2]) #I have no idea why some characters have these stupid characters...
-        clean_name=clean_name.strip()
-        if vHero.lower() == 'bang' or vHero.lower() == 'silverfang': #I'm doing it this way because most people wont type in the full thing when doing the non-fuzzy search.
-          vHero='Silverfang (Bang)'
-        try:
-          abbrev=''.join([x[0].upper() for x in hero['hero'].split(' ')]).split("-")[0]
-        except:
-          abbrev=None
-        if clean_name == vHero.capitalize() or abbrev == vHero.upper() or (vHero.split("*")[0].capitalize() in hero['hero'] and vHero.endswith("*")):
+        if check_input(vHero, hero, special):
           #Since there is a character Limit, I'm only going to return their highest level abilities.
           result=hero['details']
           vSkillResult=''

@@ -12,37 +12,43 @@
         
         <div class="box"><form name="search"><input type="text" id="userin" onkeyup="search_hero()" class="input" name="txt" onmouseout="this.value = ''; this.blur();" ></form><i class="fa fa-search"></i></div>
         <!--<div class="export-data"><button style='font-size:16px' id="export-csv">Export to CSV</button></div>-->
-        <div class="checkboxes">
+        <div class="hero-type" style="padding-top: 20px;width: 35px;height: 35px;">
+            <input type="image" class="id_hero_type_0" style="width: 35px;height: 35px;" src="images\old world.png"/>
+            <input type="image" class="id_hero_type_1" style="width: 35px;height: 35px;" src="images\complete.png"/>
+            <input type="image" class="id_hero_type_2" style="width: 35px;height: 35px;" src="images\tech.png"/>
+            <input type="image" class="id_hero_type_3" style="width: 35px;height: 35px;" src="images\physical.png"/>
+            <input type="image" class="id_hero_type_4" style="width: 35px;height: 35px;" src="images\psychic.png"/>
+            <input type="image" class="id_hero_type_5" style="width: 35px;height: 35;" src="images\agile.png"/>
+            
+            <input type="button" class="id_hero_all" style="width: 35px;height: 35px;justify-content: center;" value="All"/>
+            
+        </div>
+        <details class="checkboxes"><summary>Additional Filters</summary>
             <div class="row" name="team_buff" id="id_row" >
                 <ul id="id_hero_buff">
                     <li>
-                    <label for="id_hero_0"><input type="checkbox" name="hero" value="Team Damage Boost" placeholder="Hero Boosts Team Damage" class="id_hero_0" checked> Aumento de Daño en Equipo</label>
+                    <label for="id_hero_0"><input type="button" name="hero" value="Team Damage Boost" placeholder="Hero Boosts Team Damage" ></label>
                     </li>
-                    <li><label for="id_hero_1"><input type="checkbox" name="hero" value="Shield" placeholder="Hero Creates Shields for Team" class="id_hero_1" checked>Escudo de Equipo</label>
+                    <li><label for="id_hero_1"><input type="button" name="hero" value="Team Shield" placeholder="Hero Creates Shields for Team" class="id_hero_1" ></label>
                     </li>
-                    <li><label for="id_hero_2"><input type="checkbox" name="hero" value="Heal" placeholder="Hero Heals Team" class="id_hero_2" checked>Curación del Equipo</label>
+                    <li><label for="id_hero_2"><input type="button" name="hero" value="Team Heal" placeholder="Hero Heals Team" class="id_hero_2" ></label>
                     </li>
-                    <li><label for="id_hero_3"><input type="checkbox" name="hero" value="Stun" placeholder="Hero can stun" class="id_hero_3" checked>Oportunidad de Aturdimiento
-                    </label>
+                    <li><label for="id_hero_3"><input type="button" name="hero" value="Stun Chance" placeholder="Hero can stun" class="id_hero_3" ></label>
                     </li>
                 </ul>
             </div>
             <div class="row" name="bot_checkbox" id="id_row" >
                 <ul id="id_bot">
                     <li>
-                    <label for="id_bot_0"><input type="checkbox" name="bot" value="Bot Level Boost" placeholder="Hero Boosts Bot Level" class="id_bot_0" checked>Aumento de Nivel de Bot</label>
-                    </li>
-                    <li><label for="id_bot_1"><input type="checkbox" name="bot" value="Is Bot" placeholder="Hero Is A Bot" class="id_bot_1" checked>Mostrar Robots</label>
+                    <label for="id_bot_0"><input type="button" name="bot" value="Bot Level Boost" placeholder="Hero Boosts Bot Level" class="id_bot_0" ></label>
                     </li>
                 </ul>
             </div>
-        </div>
-        <b><i>Las casillas de verificación aún son un trabajo en progreso y pueden arrojar resultados impredecibles.</i></b>
+            <b><i>Additional filters are still a work in progress and can return unpredictable results.</i></b>
+        </details>
         <div class="container" id="container"></div>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script type="text/javascript" src="https://requirejs.org/docs/release/2.3.5/minified/require.js"></script>
-        <script type="text/javascript" src="js/table.js"></script>
-        <script type="text/javascript" src="js/export-data.js"></script>
         <script type="text/javascript" src="js/data-sp.js"></script>
     </body>
 </html> 

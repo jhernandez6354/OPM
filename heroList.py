@@ -862,8 +862,12 @@ def mapHero(d_hero):
         name=d_hero[lang].get(hero['heronameid'])
         b_active=True #A flag for the website to indicate if the character is in the works, but not yet released.
         if name is None: #WIP: This works until it doesn't; then I'll reevaluate the character name indexing.
-            name=d_hero[lang].get("200511"+str(key)).split(" Shard")[0]
+            try:
+                name=d_hero[lang].get("200511"+str(key)).split(" Shard")[0]
+            except:
+                name=""
             b_active=False
+                
         try:
             #Every hero has a type and a role, but not all have characteristics or a class
             v_characteristic=hero["characteristic"]
@@ -891,6 +895,7 @@ def mapHero(d_hero):
                 count +=1
             aHero={
                 "hero": name,
+                "shortname": hero["shortname"],
                 "details":{
                     "role":hero["role"],
                     'type':hero["type"],

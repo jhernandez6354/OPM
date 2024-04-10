@@ -117,12 +117,14 @@ $(document).ready(function(){
                 var talent = talents(data[id].details.talent);
                 var blessing = blessings(data[id].details.blessing);
                 var limit = data[id].details.limit
+                var mega_limit = data[id].details.mega_limit
                 tablearray.push("<h3>Skills</h3>")
                 tablearray.push(skill);
                 tablearray.push("<h3>Talent</h3>")
                 tablearray.push(talent);
                 tablearray.push("<h3>Limit Break</h3>")
-                tablearray.push("<dd>" + limit+"</dd>");
+                tablearray.push("<dd>" + limit+"");
+                tablearray.push("</br><b>Mega: </b>" + mega_limit+"</dd>");
                 tablearray.push("<h3>Blessing</h3>")
                 tablearray.push(blessing);
                 tablearray.push('</dl></div></div></div></span></summary></details>')

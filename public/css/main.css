@@ -9,7 +9,8 @@ body {
   margin: 0;
   background-color: #212020;
   accent-color: #da3535;
-  color: #d5d5d5; 
+  color: #d5d5d5;
+  -webkit-text-size-adjust: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -96,7 +97,8 @@ h1, h2, h3, h4, h5, h6 {
     margin: auto;
     padding: 0;
     border: 1px solid #888;
-    width: 80%;
+    width: 90%;
+    height: 95%;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     -webkit-animation-name: animatetop;
     -webkit-animation-duration: 0.4s;
@@ -136,7 +138,12 @@ h1, h2, h3, h4, h5, h6 {
     color: white;
 }
 
-.modal-body {padding: 2px 16px;}
+.modal-body {
+  padding: 2px 16px;
+  height: 100%;
+  font-size:calc(.6vw + .7vh + 0.4vmin);
+  overflow-y: auto;
+}
 
 .modal-footer {
     padding: 2px 16px;

@@ -9,3 +9,9 @@ opm-bot/yarl-1.9.2-cp311-cp311-win_amd64.whl
 opm-bot/register_commands.py
 opm-bot/register_commands.py
 /public/images
+*.dat
+/il2cpp
+/infra
+hero_analyze/__pycache__/helper_abilities.cpython-312.pyc
+assets/mscorlib.dll
+assets/libil2cpp.so

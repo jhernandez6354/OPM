@@ -48,7 +48,9 @@ lFiles=[  #There should be a function that matches each name in this list, which
     'CollectLevel',
     'CollectGroupAddition',
     'DroidLevelGrowth',
-    'DroidStar'
+    'DroidStar',
+    'HeroLimiterMega',
+    'HeroLimiterMegaSkill'
 ]
 
 mBotType={
@@ -119,7 +121,7 @@ mCombatAttr={
     20:'Max HP',
     21:'HP',
     22:'Max HP',
-    23:'Final HP', #If 20, then = HP 0.2%
+    23:'Final HP',
     30:'ATK',
     31:'ATK',
     32:'ATK',
@@ -146,7 +148,10 @@ mCombatAttr={
     191:'ACC',
     300:'PAR',
     201:'PAR',
-    253:'Rage GEN'
+    253:'Rage GEN',
+    305:'Crit DMG Resist',
+    400:'Pen. DMG',
+    701:'Crit DMG Resist'
 }
 
 mFrame={
@@ -183,17 +188,27 @@ data_path="hero_data\\"
 
 def adb_pull_files():
     client=AdbClient(host="127.0.0.1", port=5037)
-    file_path=os.getcwd()+"\csv"
+    file_path=os.getcwd()+"\\csv"
+    dat_path=os.getcwd()+"\\assets"
     device = client.device("127.0.0.1:62001")
     opm_data_path="/mnt/user/0/primary/Android/data/com.alpha.mpsen.android/cache/DiffConfig"
     files=device.shell(f"ls {opm_data_path}")
     print("Attempting to retrieve game data files.")
     try:
         for file in files.split():
-            device.pull(f"{opm_data_path}/{file}",f"{file_path}\{file}")
+            device.pull(f"{opm_data_path}/{file}",f"{file_path}\\{file}")
         print("Successfully pulled files into csv directory.")
     except Exception as error:
-        print(error)        
+        print(error)
+    try:
+        device.pull("/mnt/user/0/primary/Android/data/com.alpha.mpsen.android/files/bundles/gallery.dat",f"{dat_path}\\gallery.dat")
+        device.pull("/mnt/user/0/primary/Android/data/com.alpha.mpsen.android/files/il2cpp/Metadata/global-metadata.dat",f"{dat_path}\\global-metadata.dat")
+        device.pull("/mnt/user/0/primary/Android/data/com.alpha.mpsen.android/files/il2cpp/Resources/mscorlib.dll-resources.dat",f"{dat_path}\\mscorlib.dll")
+        device.pull("/mnt/user/0/primary/Android/data/com.alpha.mpsen.android/cache/release_globalConfigs_android.2.9.20.dat",f"{dat_path}\\android.dat")
+        print("Successfully pulled files into csv directory.")
+    except Exception as error:
+        print(error)
+
 
 #When parsing their CSV files, * is a delimiter as well.
 def genMappings():
@@ -223,6 +238,15 @@ def genLang(lang):
     except:
         dText=None
     return dText
+
+#Converts a stat block into useable values.
+def stat_helper(stat):
+    m_stat={}
+    if len(stat.split(";"))>1:
+        for value in stat.split(";"):
+            s_val=value.split(",")
+            m_stat[mCombatAttr[int(s_val[0])]]=int(s_val[1])
+    return m_stat
 
 def Hero(reader):
     dLine={}
@@ -319,6 +343,47 @@ def HeroLimiter(reader):
             }}
             try: #The first entry for the individual skill will throw an error without this.
                 dLine[row[0].split('*')[2]].update(mString) #Then set the base skill id as the key for all skill level ids.
+            except:
+                dLine[row[0].split('*')[2]]=mString #Create a map list of all skill levels and associate them to a single skill id.
+    try:
+       dLine
+    except:
+        dLine=None
+    return dLine
+
+def HeroLimiterMega(reader):
+    #*3010*3*1*0*prop,10233,200*48*0*21,253920;31,14719;41,17664;23,1092;33,624;43,624;305,400*21,31486;31,1825;41,2190;23,1092;33,624;43,624;305,400*
+    #This is a weird one. The mega limiters need to start at 11, and all stat gains are the same for each hero. All that changes is the skill.
+    dLine={}
+    for line in reader:
+        row = line.split('\\n')
+        if not row[0].startswith("#"): #All of these files start with a commented descriptor.
+            m_stat=stat_helper(row[0].split('*')[8])
+            if m_stat!={}:
+                mString={
+                    str(int(row[0].split('*')[3])+10):m_stat}
+                try: #The first entry for the individual skill will throw an error without this.
+                    dLine[row[0].split('*')[2]].update(mString) #Then set the base skill id as the key for all skill level ids.
+                except:
+                    dLine[row[0].split('*')[2]]=mString #Create a map list of all skill levels and associate them to a single skill id.
+    try:
+       dLine
+    except:
+        dLine=None
+    return dLine
+
+def HeroLimiterMegaSkill(reader):
+    #*1*1*130101**1*13010101*13010121**
+    dLine={}
+    for line in reader:
+        row = line.split('\\n')
+        if not row[0].startswith("#"): #All of these files start with a commented descriptor.
+            mString={
+                'desc': row[0].split('*')[7],
+                'descval':row[0].split('*')[8]                
+            }
+            try: #The first entry for the individual skill will throw an error without this.
+                dLine[row[0].split('*')[2]].update(mString) #All mega limiters are based on the characters class
             except:
                 dLine[row[0].split('*')[2]]=mString #Create a map list of all skill levels and associate them to a single skill id.
     try:
@@ -763,6 +828,7 @@ def mapSkills(dSkills,name):
 def mapStats(dStats):
     mStat={}
     for key, vStat in dStats['Hero'].items():
+        
         if vStat['hero'] != False: #Bots only have the Type and Role. Still not sure where to get those from though.
             try: #A small percentage of the heroes have their own cards.
                 vCardGroup=dStats['CollectLevel'][vStat['heroid']]['group']
@@ -772,8 +838,12 @@ def mapStats(dStats):
                 vCardFrame=vCardLevel=vCardGroup=None
             try:
                 limiter=dStats['HeroLimiter'][vStat['heroid']]
+                for id, v_char in mCharacteristic.items():#Though the actual mega limiter characters get is based on their class, the stat blocks come from their characteristics.
+                    if v_char == vStat['characteristic']:
+                        mega_limiter=dStats['HeroLimiterMega'][str(id)]
             except:
                 limiter=None
+                mega_limiter=None
             try:
                 blessing=dStats['HeroBlessingSkill'][vStat['heroid']]["blessing"]
                 mbless={
@@ -806,7 +876,8 @@ def mapStats(dStats):
                     'quality': dStats['HeroQualityProperty'][vStat['heroid']],
                     'grade': dStats['HeroGradeProperty'][vStat['heroid']], #This is not yet implemented as of August 2021, but I'm putting it in now before I forget how to read/write my script.
                     'blessing': mbless,
-                    'limiter': limiter  
+                    'limiter': limiter,
+                    'mega_limiter': mega_limiter
                 }
             except:
                 print(vStat)
@@ -904,6 +975,7 @@ def mapHero(d_hero):
                     "skill":[],
                     "talent":[],
                     "limit":"",
+                    "mega_limit":"",
                     "blessing":{},
                     "active": b_active
                 }
@@ -931,17 +1003,24 @@ def mapHero(d_hero):
                         aHero["details"]['talent']=talent
                 #For the blessings and limiter, we set the key to the hero ID to make it easy to link back to the hero.
                 #Now trying to get limit breakthrough
+                    for id, v_class in mClass.items():
+                        if v_class == hero['class']:
+                            dMega_Limit=d_hero['HeroLimiterMegaSkill'][str(id)]
                     try:
                         dLimit=d_hero['HeroLimiter'].get(hero['heroid'])
                         limitDesc=d_hero[lang].get(dLimit['desc']).replace('\\n','')
+                        megalimitDesc=d_hero[lang].get(dMega_Limit['desc']).replace('\\n','')
                         if limitDesc is None:
                             dLimit=None
+                            megalimitDesc=None
                     except:
                         dLimit=None
+                        dMega_Limit=None
                     if dLimit is not None: #This part of the code sucks and it really should automatically find the number of values for the limiter, but it's not formatting my strings correctly
                         for key, val in enumerate(dLimit['descval'].split(',')):
                             limitDesc=limitDesc.replace("{"+str(key)+"}", val)
                         aHero["details"]['limit']=(limitDesc)
+                        aHero["details"]['mega_limit']=(megalimitDesc)
                 #And now the blessing...
                     try:
                         dBless=d_hero['HeroBlessSkill'].get(hero['heroid'])
@@ -966,6 +1045,7 @@ def mapHero(d_hero):
                     "skill":[],
                     "talent":[],
                     "limit":"",
+                    "mega_limit":"",
                     "blessing":{},
                     "active": b_active
                 }

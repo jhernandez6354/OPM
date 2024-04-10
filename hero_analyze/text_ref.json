@@ -1,0 +1,25 @@
+{
+    "chance to inflict": {
+        "energy loss":{
+            "rage": -10
+        },
+        "stun":{
+            "status":"stun"
+        },
+        "silence":{
+            "active":false
+        },
+        "cold": {
+            "atk": "down"
+        },
+        "burn": {
+            "dot": true
+        },
+        "sleep": {
+            "status":"stun"
+        }
+    },
+    "increases the attack": {
+        "atk": "up"
+    }
+}

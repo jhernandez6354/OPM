@@ -17,9 +17,8 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0; }
 
 .container {
-  max-width: 93%;
-  margin-right: auto;
-  margin-left: auto;
+  max-width: 95%;
+  margin-right: 0;
   display: block;
   justify-content: center;
   align-items: top;
@@ -38,7 +37,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .hero-type {
   position:fixed;
-  margin-top: 8%;
+  padding-right: 35px;
 }
 
 .table {
@@ -56,11 +55,11 @@ h1, h2, h3, h4, h5, h6 {
 
 .table-content {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   grid-auto-rows: auto;
   grid-gap: 1rem;
   justify-content: center;
-  margin-left: 4%;
+  margin-left: 45px;
 }
 
 .hero-details {

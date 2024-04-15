@@ -15,3 +15,4 @@ opm-bot/register_commands.py
 hero_analyze/__pycache__/helper_abilities.cpython-312.pyc
 assets/mscorlib.dll
 assets/libil2cpp.so
+/assets

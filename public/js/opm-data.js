@@ -78,7 +78,15 @@ $(document).ready(function(){
         dataType: 'json',
         crossDomain: true,
         success: function(data){
-            //tablearray.push('<div class="table"><div class="table-header"><div class="header__item"><a id="normal">Normal Skill</a></div><div class="header__item"><a>Active Skill</a></div><div class="header__item"><a id="passive1" >Passive Skill 1</a></div><div class="header__item"><a id="passive2" >Passive Skill 2</a></div><div class="header__item"><a id="talent" >Talent</a></div><div class="header__item"><a id="limit" >Limiter</a></div><div class="header__item"><a id="blessing" >Blessing</a></div></div>
+            tablearray.push('<div class=\"hero-type\" style=\"padding-top: 20px;width: 35px;height: 35px;\">\
+                <input type=\"image\" class=\"id_hero_type_0\" style=\"width: 35px;height: 35px;\" src=\"images\\old world.png\"/>\
+                <input type=\"image\" class=\"id_hero_type_1\" style=\"width: 35px;height: 35px;\" src=\"images\\complete.png\"/>\
+                <input type=\"image\" class=\"id_hero_type_2\" style=\"width: 35px;height: 35px;\" src=\"images\\tech.png\"/>\
+                <input type=\"image\" class=\"id_hero_type_3\" style=\"width: 35px;height: 35px;\" src=\"images\\physical.png\"/>\
+                <input type=\"image\" class=\"id_hero_type_4\" style=\"width: 35px;height: 35px;\" src=\"images\\psychic.png\"/>\
+                <input type=\"image\" class=\"id_hero_type_5\" style=\"width: 35px;height: 35;\" src=\"images\\agile.png\"/>\
+                <input type=\"button\" class=\"id_hero_all\" style=\"width: 35px;height: 35px;justify-content: center;\" value=\"All\"/>\
+            </div>')
             tablearray.push('<div class="table-content">')
             vint=0
             for (id = 0; id < data.length; id++) { //get a count of heroes and assign them to an index.
@@ -92,6 +100,11 @@ $(document).ready(function(){
                 v_class=(data[id].details.class);
                 tablearray.push('<details class=\"hero-details\">')
                 tablearray.push("<summary><span class=\"modal_button\" href=\"#myModal"+vint+"\">");
+                if (data[id].details.boss == true) {
+                    boss="<span class=\"boss\">BOSS</span></br>"
+                } else {
+                    boss=""
+                }
                 if (data[id].details.active == false) {
                     tablearray.push("<span class=\"upcoming\" style=\"font-family:Verdana,Geneva,sans-serif\"><strong><span style=\"color:#e74c3c\">\tUPCOMING</span></strong></span>");
                 }else {
@@ -107,12 +120,12 @@ $(document).ready(function(){
                 } else{
                     tablearray.push("<img class=\"type_img\" src=\"images\\"+ v_role.toLowerCase() +".png\"title=\""+v_role+"\"/>");
                 };
-                if(/^\d+$/.test(data[id].shortname) ||data[id].details.active == false) {
+                if(data[id].details.active == false) {
                     hero_img=""
                 } else {
-                    hero_img="<img id=\"hero_icon\" href=\"#myModal"+vint+"\" src=\"images\\avatar_"+ data[id].shortname +"_hero.png\" title=\""+v_role+"\"/>"
+                    hero_img="<img id=\"hero_icon\" href=\"#myModal"+vint+"\" src=\"images\\avatar_"+ data[id].shortname +".png\" title=\""+v_role+"\"/>"
                 }
-                tablearray.push("</div><div class=\"hero_name\" href=\"#myModal"+vint+"\">"+ data[id].hero+"<div class=\"hero_icon\" href=\"#myModal"+vint+"\">"+hero_img+"</div><div id=\"myModal"+vint+"\" class=\"modal\"><div class=\"modal-content\"><div class=\"modal-body\"><dl>")
+                tablearray.push("</div><div class=\"hero_name\" href=\"#myModal"+vint+"\"><h4>"+ boss + data[id].hero+"</h4><div class=\"hero_icon\" href=\"#myModal"+vint+"\">"+hero_img+"</div><div id=\"myModal"+vint+"\" class=\"modal\"><div class=\"modal-content\"><div class=\"modal-body\"><dl>")
                 var skill = skills(data[id].details.skill);
                 var talent = talents(data[id].details.talent);
                 var blessing = blessings(data[id].details.blessing);

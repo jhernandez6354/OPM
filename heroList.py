@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 #This assumes these files exist in the csv folder and will save them to their own maps to be used later.
 #The files in \Storage\Android\data\com.alpha.mpsen.android\cache\DiffConfig and are subject to change weekly.
 
-adb_pull=True #I pull the files from the game generated csv files using Nox. 
+adb_pull=False #I pull the files from the game generated csv files using Nox. 
     # Since I only use Nox for this, I only set this to true when I want to pull the new data every update (2 weeks).
 b_s3_upload=True #I'm trying to do as little work with this as possible so I have the script upload the files for me to s3.
     #Set this flag to false if you don't want it attempt s3 uploads, which will fail unless you have access keys in your .env file.
@@ -29,7 +29,11 @@ region="us-east-1"
 #Bots Quality            DroidStar
 #Potential Chip          Potential Chips /Not Yet Added to data
 
-lang_list=['Default_English','Default_Spanish','Default_Russian']
+lang_list=[
+    'Default_English',
+    #'Default_Spanish',
+    #'Default_Russian'
+]
 
 lFiles=[  #There should be a function that matches each name in this list, which tell genMappings how to read to file.
     'HeroBlessSkill',
@@ -181,7 +185,19 @@ invalidHeroes=[ #These heroes are capable of being mythic heroes, but do not hav
     'ghost',
     'snowman',
     'eggmonster',
-    'saitama3year'
+    'saitama3year',
+    'tanktopblackhole',
+    'hammerhead',
+    'grounddragon',
+    'jetniceguy',
+    'snek',
+    'supercustom',
+    'mumenrider',
+    'triplestafflilly',
+    'eyelashes',
+    'frogman',
+    'slugerous',
+    'hawk'
 ]
 
 data_path="hero_data\\"
@@ -256,37 +272,62 @@ def Hero(reader):
             hero=True  
             row=row[0].split('*')
             if int(row[1]) >= 20010: #Defender Bots are in this range
-                hero=False    
-            if int(row[1]) < 2000 and row[1] != '' and row[9] not in invalidHeroes and int(row[2]) > 2: #10000 heroes are unplayable bosses or test heroes. Also, exclude heroes that don't have a name. Finally, exclude any heroes of "Quality" 2 or less because they will never become mythic+.
+                hero=False
+            excludeIds=[2013,2010,10000,10001,10002,10003,10004,10005,10006,10007,10008,10009,10010,10013,10014,10015,10020,10021,10025,10026,10029,10030,10031,10034,10035,10037,10040,10041,10042,3,4,5,6,7,8,9,15,16,17,28,29,37,48,54,55,59,64,65,66,67,68,73,74,75,76,77,78,79,81,82]
+            if int(row[1]) < 20000 and row[1] != '' and row[9] not in invalidHeroes and int(row[1]) not in excludeIds: #10000 heroes are unplayable bosses or test heroes. Also, exclude heroes that don't have a name. Finally, exclude any heroes of "Quality" 2 or less because they will never become mythic+.
                 #['', '1', '3', '3', '1', '5', '8', '200110001', '2001042', 'fukegao', 'fukegao', '', '', '10012', '10011,10013,10014', '', '10011,10012,10013,10014', '496', '130', '46', '500', '0', ''
                 # , 'attack,skill', '10010', '10003,20001,30004', '2001043', '10015', '0', '393', '33,25,1', '2.0.23', '', '1', '1', '4', '61,44,0.9', '0', '5,-22', '0', '2', '\n']
                 if  row[9] != '':
                     skill=int(row[14].split(',')[0])
-                    mString={
-                        'hero': True,
-                        'heroid':row[1],
-                        'heronameid':row[7],
-                        'shortname': row[9],
-                        'type': mType[int(row[3])],
-                        'role': mRole[int(row[5])],
-                        'characteristic': mCharacteristic[int(row[4])],
-                        'class': mClass[int(row[35])],
-                        'hp': row[17],
-                        'atk': row[18],
-                        'def': row[19],
-                        'skill0': str(skill), 
-                        'skill1': str(skill+1),
-                        'skill2': str(skill+2),
-                        'skill3': str(skill+3),
-                        'talent': str(skill+4)#I know it's a dumb way to get skills and talents, it works.
-                    }
-                    dLine[row[1]]=mString
-            if hero is False and int(row[14]) != 0 and int(row[1]) > 1 and int(row[1]) > 20000: # Exclude bots that don't have skills and bots less than "blue" quality
+                    if int(row[17]) == 1000000000000:
+                        b_hero=False
+                        b_boss=True
+                        inc=10000
+                    elif int(row[1])==1 and int(row[2])<5:
+                        b_hero=False
+                        b_boss=False
+                    else:
+                        b_hero=True
+                        b_boss=False
+                        inc=0
+                    if int(row[1]) == 125:
+                        shortname='vampire'
+                    else:
+                        shortname=row[9]
+                    if b_hero is True or b_boss is True:
+                        mString={
+                            'hero': b_hero,
+                            'heroid':row[1],
+                            'heronameid':row[7],
+                            'shortname': shortname,
+                            'type': mType[int(row[3])],
+                            'role': mRole[int(row[5])],
+                            'characteristic': mCharacteristic[int(row[4])],
+                            'class': mClass[int(row[35])],
+                            'hp': row[17],
+                            'atk': row[18],
+                            'def': row[19],
+                            'skill0': str(skill), 
+                            'skill1': str(skill+1),
+                            'skill2': str(skill+2),
+                            'skill3': str(skill+3),
+                            'talent': str(skill+4),#I know it's a dumb way to get skills and talents, it works.
+                            'boss': b_boss
+                        }
+                        hero_exists=False
+                        for key, entry in dLine.items():
+                            if entry['heronameid'] == row[7]:
+                                hero_exists=True
+                                break
+                        if hero_exists==False:
+                            dLine[row[1]]=mString
+            if hero is False and int(row[14]) != 0 and int(row[1]) > 20000 and b_boss is False: # Exclude bots that don't have skills and bots less than "blue" quality
                 mString={
                     'hero': False,
+                    'boss': False,
                     'heroid':row[1],
                     'heronameid':row[7],
-                    'shortname': row[7],
+                    'shortname': row[9],
                     'hp': row[17],
                     'atk': row[18],
                     'def': row[19],
@@ -295,7 +336,15 @@ def Hero(reader):
                     'skill0': row[16].split(',')[0],
                     'skill1':  str(int(row[16].split(',')[0])+1)
                 }
-                dLine[row[1]]=mString
+                hero_exists=False
+                for key, entry in dLine.items():
+                    if entry['heronameid'] == row[7]:
+                        hero_exists=True
+                        break
+                if hero_exists==False:
+                    dLine[row[1]]=mString
+            row=None
+            mString=None
     try:
         dLine
     except:
@@ -814,7 +863,10 @@ def mapSkills(dSkills,name):
                     sDesc=((d_hero[lang].get(vSkill['desc']))).format(*vSkill['val'].split(',')).replace('\\n','')
         except Exception as error:
             print(f"Failed to pull the skill description for {name}")
-        sDesc=((re.sub('<material.*?>', '', sDesc).replace('<color=#',"<font color=#")).replace("</color>","</font>")).replace('</material>','')
+        try:
+            sDesc=((re.sub('<material.*?>', '', sDesc).replace('<color=#',"<font color=#")).replace("</color>","</font>")).replace('</material>','')
+        except:
+            print(sDesc)
         lSkill={
             "level": vSkill["level"],
             "desc": sDesc
@@ -828,7 +880,6 @@ def mapSkills(dSkills,name):
 def mapStats(dStats):
     mStat={}
     for key, vStat in dStats['Hero'].items():
-        
         if vStat['hero'] != False: #Bots only have the Type and Role. Still not sure where to get those from though.
             try: #A small percentage of the heroes have their own cards.
                 vCardGroup=dStats['CollectLevel'][vStat['heroid']]['group']
@@ -881,7 +932,7 @@ def mapStats(dStats):
                 }
             except:
                 print(vStat)
-        else:
+        elif int(vStat['heroid'])> 20000:
             vType=None
             vRole=None
             vCharacteristic=None
@@ -896,6 +947,21 @@ def mapStats(dStats):
                 'type': vStat['type'],
                 'level': dStats['DroidLevelGrowth'][vStat['heroid']],
                 'quality': dStats['DroidStar'][vStat['heroid']]
+            }
+            pass
+        else:
+            vType=None
+            vRole=None
+            vCharacteristic=None
+            vClass=None
+            vCardGroup=None
+            lStat={
+                'base': {
+                    'HP': vStat['hp'],
+                    'ATK': vStat['atk'],
+                    'DEF': vStat['def'],
+                },
+                'type': vStat['type'],
             }
             pass
         name=d_hero[lang].get(vStat['heronameid']) #Like in mapHero, we need to bind the stats to its respective hero.
@@ -922,7 +988,6 @@ def mapEquip(dEquip):
 def s3_upload(file,data):
     s3 = boto3.resource('s3',aws_access_key_id=os.getenv("access_key"), aws_secret_access_key=os.getenv('secret_key'))
     s3object = s3.Object(bucket, 'data/'+file)
-
     s3object.put(
         Body=(bytes(json.dumps(data).encode('UTF-8')))
     )
@@ -936,7 +1001,10 @@ def mapHero(d_hero):
             try:
                 name=d_hero[lang].get("200511"+str(key)).split(" Shard")[0]
             except:
-                name=""
+                try:
+                    name=d_hero[lang].get("200100"+str(key))
+                except:
+                    name=""
             b_active=False
                 
         try:
@@ -948,7 +1016,7 @@ def mapHero(d_hero):
             v_class=hero["class"]
         except:
             v_class="None"
-        if hero['hero'] is False: #Bots only have 2 skills and no talents.
+        if hero['hero'] is False and hero['boss'] is False: #Bots only have 2 skills and no talents.
             limit=2
         else: #Heroes that noramally start at elite quality have 4 skills and 1 talent.
             limit=4
@@ -960,7 +1028,14 @@ def mapHero(d_hero):
                     skill.append(mapSkills(d_hero['HeroSkillDesc'].get(hero['skill'+str(count)]),name))
                 except Exception as error:
                     #I didn't bother having it scan any heroes without at least 4 abilities as they are not worth anything past stage 25 and are useless in tournaments.
-                    name=d_hero[lang].get("200511"+str(key)).split(" Shard")[0]
+                    try:
+                        name=d_hero[lang].get("200511"+str(key)).split(" Shard")[0]
+                    except:
+                        try:
+                            name=d_hero[lang].get("200100"+str(key))
+                        except:
+                            name=""
+                    
                     b_active=False
                     break
                 count +=1
@@ -977,7 +1052,8 @@ def mapHero(d_hero):
                     "limit":"",
                     "mega_limit":"",
                     "blessing":{},
-                    "active": b_active
+                    "active": b_active,
+                    "boss":hero["boss"]
                 }
             }
             if b_active is True:
@@ -1047,7 +1123,8 @@ def mapHero(d_hero):
                     "limit":"",
                     "mega_limit":"",
                     "blessing":{},
-                    "active": b_active
+                    "active": b_active,
+                    "boss":hero["boss"]
                 }
             }
         try:

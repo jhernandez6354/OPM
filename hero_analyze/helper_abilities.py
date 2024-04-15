@@ -2,21 +2,23 @@ import json
 import string
 import re
 import os
-
+from ai_analyzer import parser
 
 def remove_html_tags(text):
     clean = re.compile('<.*?>')
     return re.sub(clean, '', text).encode('ascii', errors='ignore').strip().decode('ascii')
 
 def remove_punctuation(text):
-    regex = re.compile('[%s]' % re.escape(string.punctuation))
-    return regex.sub('', text)
+    return re.sub("[^a-zA-Z0-9,'%()]".format(text), ' ', text).rstrip()
 
 def remove_lvl(text):
     if text.startswith('Lv'):
-        return text[4:]
+        return text[5:].lstrip()
     else:
         return text
+    
+def merge_ability(parse_list):
+    return parser(parse_list)
 
 def talents(name, talents,file):
     i=1
@@ -25,6 +27,7 @@ def talents(name, talents,file):
         for ability in talent[list(talent.keys())[0]]:
             parsed[i]=remove_lvl(remove_punctuation(remove_html_tags(ability['desc'])))
             i+=1
+    #parsed=merge_ability(parsed,"talents")
     write_to_file(name, "talent", parsed,file)
 
 def skill(name, skills,file):
@@ -46,6 +49,7 @@ def skill(name, skills,file):
             else:
                 slot="passive2"
             parse_list[slot]=parsed
+            parsed={}
             x+=1
     write_to_file(name, "skills", parse_list,file)
 

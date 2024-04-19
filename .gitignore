@@ -16,3 +16,8 @@ hero_analyze/__pycache__/helper_abilities.cpython-312.pyc
 assets/mscorlib.dll
 assets/libil2cpp.so
 /assets
+/AssetBundleExtractor
+/delimited
+/hero_analyze/opm_hero_property
+/hero_analyze/specs
+/json

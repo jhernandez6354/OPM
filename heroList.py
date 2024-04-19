@@ -4,13 +4,14 @@ import codecs
 import re #Used to remove the <material markup
 from ppadb.client import Client as AdbClient
 import os
+import sys
 from dotenv import load_dotenv
 #This assumes these files exist in the csv folder and will save them to their own maps to be used later.
 #The files in \Storage\Android\data\com.alpha.mpsen.android\cache\DiffConfig and are subject to change weekly.
 
 adb_pull=False #I pull the files from the game generated csv files using Nox. 
     # Since I only use Nox for this, I only set this to true when I want to pull the new data every update (2 weeks).
-b_s3_upload=True #I'm trying to do as little work with this as possible so I have the script upload the files for me to s3.
+b_s3_upload=False #I'm trying to do as little work with this as possible so I have the script upload the files for me to s3.
     #Set this flag to false if you don't want it attempt s3 uploads, which will fail unless you have access keys in your .env file.
 bucket="elasticbeanstalk-us-east-1-422356278867"
 region="us-east-1"
@@ -204,7 +205,7 @@ data_path="hero_data\\"
 
 def adb_pull_files():
     client=AdbClient(host="127.0.0.1", port=5037)
-    file_path=os.getcwd()+"\\csv"
+    file_path=os.getcwd()+"\\delimited"
     dat_path=os.getcwd()+"\\assets"
     device = client.device("127.0.0.1:62001")
     opm_data_path="/mnt/user/0/primary/Android/data/com.alpha.mpsen.android/cache/DiffConfig"
@@ -213,7 +214,7 @@ def adb_pull_files():
     try:
         for file in files.split():
             device.pull(f"{opm_data_path}/{file}",f"{file_path}\\{file}")
-        print("Successfully pulled files into csv directory.")
+        print("Successfully pulled files into delimiter directory.")
     except Exception as error:
         print(error)
     try:
@@ -221,9 +222,50 @@ def adb_pull_files():
         device.pull("/mnt/user/0/primary/Android/data/com.alpha.mpsen.android/files/il2cpp/Metadata/global-metadata.dat",f"{dat_path}\\global-metadata.dat")
         device.pull("/mnt/user/0/primary/Android/data/com.alpha.mpsen.android/files/il2cpp/Resources/mscorlib.dll-resources.dat",f"{dat_path}\\mscorlib.dll")
         device.pull("/mnt/user/0/primary/Android/data/com.alpha.mpsen.android/cache/release_globalConfigs_android.2.9.20.dat",f"{dat_path}\\android.dat")
-        print("Successfully pulled files into csv directory.")
+        print("Successfully pulled files into delimiter directory.")
     except Exception as error:
         print(error)
+    print("Attempting to convert files into valid Json.")
+    convert_game_files(file_path)
+
+def write_to_file(file_name,text):
+    file_path=f"{os.getcwd()}\\json\\{file_name}.json"
+    if not os.path.exists(file_path):
+        with open(file_path, 'w'): pass
+    if os.stat(file_path).st_size == 0:
+        vline=text
+        with open(file_path, 'w+') as f: json.dump(vline,f)
+    with open(file_path, 'r+') as f:
+        data = json.load(f)
+        data=text
+        f.seek(0)
+        json.dump(data, f, indent=4)
+        f.truncate()
+
+def convert_game_files(file_path):
+    with open(f"{os.getcwd()}\\headers.json", 'r') as head_file:
+        headers=json.load(head_file)
+    for file_name in os.listdir(file_path):
+        file_name=file_name.split('.csv')[0]
+        print(file_name)
+        if file_name in headers.keys():
+            print(f"Converting {file_name}")
+            reader = codecs.open(f"{file_path}\\{file_name}.csv", 'r', encoding='utf-8')
+            l_line=list()
+            for line in reader:
+                v_list=list()
+                row = line.split('\\n')
+                if not row[0].startswith("#"):
+                    v_row=row[0].split('*')[1:]
+                    idx=0
+                    for header in list(headers[file_name]):
+                        v_list.append({header:v_row[idx]})
+                        idx+=1
+                    result=dict()
+                    for line in v_list:
+                        result.update(line)
+                    l_line.append(result)
+            write_to_file(file_name,l_line)
 
 
 #When parsing their CSV files, * is a delimiter as well.
@@ -231,14 +273,14 @@ def genMappings():
     dFiles={}
     for fName in lFiles:
         dFiles[fName]=[]
-        file_name="csv/"+fName+'.csv' 
-        print("Mapping out "+ file_name)
+        file_name="delimited/"+fName+'.csv' 
+        print("Converting "+ file_name)
         reader = codecs.open(file_name, 'r', encoding='utf-8')
         dFiles[fName]=eval(fName)(reader)
     return dFiles
 
 def genLang(lang):
-    file_name="csv/"+lang+'.csv' 
+    file_name="delimited/"+lang+'.csv' 
     print("Mapping out "+ file_name)
     reader = codecs.open(file_name, 'r', encoding='utf-8')
     #Standard formatting: *10421573*Metal Bat Rare Card Frame *
@@ -470,7 +512,7 @@ def HeroBlessSkill(reader):
     dLine={}
     d_bless={}
     #To tie this to a hero, we need data from HeroBless file as well.
-    map_reader = codecs.open("csv/HeroBless.csv", 'r', encoding='utf-8')
+    map_reader = codecs.open("delimited/HeroBless.csv", 'r', encoding='utf-8')
     bless_map=HeroBless(map_reader)
     for line in reader:
         row = line.split('\\n')
@@ -1135,6 +1177,7 @@ def mapHero(d_hero):
 
 if adb_pull is True:
     adb_pull_files()
+convert_game_files(os.getcwd()+"\\delimited")
 for lang in lang_list:
     if lang == 'Default_English':
         f_list="herolist"

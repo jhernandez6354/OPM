@@ -40,6 +40,20 @@ h1, h2, h3, h4, h5, h6 {
   padding-right: 35px;
 }
 
+input#type-img:hover {
+  transition: 1s;
+  background-color: #48abee;
+  border-radius: 40%;
+  cursor: pointer;
+}
+
+input#filter-btn:hover {
+  transition: 0.5s;
+  background-color: #464545;
+  text-shadow: 1px 1px #d5d5df;
+  cursor: pointer;
+}
+
 .table {
   width: 100%;
   display:block; 
@@ -66,6 +80,12 @@ h1, h2, h3, h4, h5, h6 {
   border: 2px solid #e7e7e7;
   border-radius: 4px;
   padding: .5rem;
+}
+
+.hero-details:hover {
+  transition: 1s;
+  background-color: rgba(148, 146, 144, 0.5);
+  cursor: pointer;
 }
 
 .table-data, .header__item {
@@ -262,7 +282,7 @@ input.id_upcoming {
 }
 .box:hover input{
     width: 350px;
-    background: #3b3640;
+    background: #554366;
     border-radius: 10px;
 }
 .box i{

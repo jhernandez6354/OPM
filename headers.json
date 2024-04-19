@@ -1,0 +1,68 @@
+{
+    "Hero": {
+        "Id":0,"Rarity":0,"Type":0,"Role":0,"MainDuty":0,"SubDuty":0,"Name":0,"CV":0,"FileName":0,"fileNameReverse":0,"skin":0,"skinReverse":0,"MainSkill":0,"Skill":0,"auras":0,"SkillDescList":0,"HpBase":0,"AtkBase":0,"DefBase":0,"CritBase":0,"isMonster":0,"GalleryAvatar":0,"SkillAnimation":0,"PreCommonSkill":0,"Tag":0,"Des":0,"TalentSkill":0,"Resolution":0,"HandbookRank":0,"Offset":0,"VersionSign":0,"SameRole":0,"IsDrawCardWish":0,"IsGallery":0,"Job":0,"GalleryOffset":0,"Limiter":0,"SDOffset":0,"DroidRole":0
+    },
+    "HeroAcademyLevel": {
+        "Id":0,"Level":0,"Frag":0,"Attribute":0,"JobLimitLevel":0,"PvpAttribute":0
+    },
+    "HeroJobLevel": {
+        "Id":0,"Job":0,"Level":0,"JobPoint":0,"Attribute":0,"Skill":0,"SkillLevel":0,"PvpAttribute":0
+    },
+    "HeroGradeProperty": {
+        "Id":0,"HeroId":0,"GradeLevel":0,"HpInc":0,"AtkInc":0,"DefInc":0
+    },
+    "HeroLevel":{
+        "Id":0,"Level":0,"EnhancePeriod":0,"Exp":0,"Coin":0,"Powder":0,"TeamLevelLimit":0
+    },
+    "HeroLimiter":{
+        "Id":0,"Heroid":0,"LimiterLevel":0,"Property":0,"SkillDes":0,"SkillDesParam":0,"Aura":0,"TypeAura":0,"AuraDes":0,"PropId":0,"PvpProperty":0,"PvpAura":0,"PvpTypeAura":0
+    },
+    "HeroSkillDesc":{
+        "Id":0,"SkillId":0,"Level":0,"Name":0,"Desc":0,"DescParam":0,"UnlockLevel":0
+    },
+    "HeroQualityProperty":{
+        "Id":0,"HeroId":0,"QualityLevel":0,"HpParam":0,"AtkParam":0,"DefParam":0,"HpInc":0,"AtkInc":0,"DefInc":0,"LimiterPropertyMax":0,"LimiterAuraMax":0,"LimiterTypeAuraMax":0,"PvpLimiterPropertyMax":0,"PvpLimiterAuraMax":0,"PvpLimiterTypeAuraMax":0
+    },
+    "HeroLevelGrowth":{
+        "Id":0,"Level":0,"Grade":0,"EnhancePeriod":0,"HpInc":0,"AtkInc":0,"DefInc":0
+    },
+    "HeroTypeAttribute":{
+        "Id":0,"Type":0,"Type1Num":0,"Type2Num":0,"AttributeAddition":0,"Desc":0
+    },
+    "MechanicalPowerLevel":{
+        "Id":0,"HeroId":0,"Level":0,"DroidCost":0,"Coin":0,"Attribute":0,"PvpAttribute":0
+    },
+    "HeroTalentAttribute":{
+        "Id":0,"HeroId":0,"TalentLevel":0,"Attribute":0
+    },
+    "Equip":{
+        "Id":0,"Type":0,"Role":0,"Quality":0,"Name":0,"Desc":0,"Attribute":0,"AttributeInc":0,"NextLevel":0,"Icon":0
+    },
+    "DroidLevelGrowth":{
+        "Id":0,"HeroId":0,"Level":0,"DroidExpCost":0,"DiamondCost":0,"HpInc":0,"AtkInc":0,"DefInc":0,"DroidCost":0
+    },
+    "DroidStar":{
+        "Id":0,"Star":0,"HeroId":0,"ChipCost":0,"HpInc":0,"AtkInc":0,"DefInc":0,"HpParam":0,"AtkParam":0,"DefParam":0,"DroidCostParam":0
+    },
+    "DroidBotLegion":{
+        "Id":0,"BotList":0,"BossId":0
+    },
+    "HeroLimiterMega":{
+        "Id":0,"Type":0,"SubDuty":0,"EssenceProp":0,"ShardCost":0,"Level":0,"Attribute":0,"AttributeInc":0
+    },
+    "HeroLimiterMegaSkill":{
+        "Id":0,"Type":0,"UnitSkillId":0,"UnitSubId":0,"MegaLevel":0,"Name":0,"Desc":0,"SubDesc":0
+    },
+    "CollectFrame":{
+        "Id":0,"HeroId":0,"Unknown":0,"HP":0,"FrameName":0,"CardRank":0,"Cost":0,"AtkInc":0,"CardHeroId":0,"Total":0,"Property":0,"PropId":0,"PropAura":0
+    },
+    "CollectLevel":{
+        "Id":0,"GroupId":0,"HeroId":0,"Level":0,"Attribute":0,"CardCost":0,"AttributeInc":0,"Total":0
+    },
+    "CollectGroupAddition":{
+        "Id":0,"FrameGroup":0,"TotalLevelRequire":0,"Attribute":0,"Property":0,"GroupName":0,"AttributeInc":0,"GalleryOffset":0
+    },
+    "HeroBlessSkill":{
+        "Id":0,"Unknown":0,"Type":0,"Class":0,"Name":0,"Desc":0,"Attributes":0,"Rank":0,"1:1,2,3,4":0,"PvpProperty":0,"PvpAttribute":0,"AttributeAddition":0,"EventId":0,"EventBonus":0,"BonusId":0,"BonusLevel":0
+    }
+}

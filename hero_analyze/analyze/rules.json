@@ -1,0 +1,18 @@
+{
+    "stun":{
+        "round":false
+    },
+    "sleep":{
+        "round":false
+    },
+    "cold":{
+        "round":false
+    },    
+    "burn":{
+        "dot": "attack"
+    },
+    "energy loss": {
+        "rage": "enemy"
+    },
+    
+}

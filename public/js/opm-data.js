@@ -62,9 +62,9 @@ function filter(vfilter,v_class) {
     let data = document.getElementsByClassName(v_class);
     for (let i = 0; i < data.length; i++) {
         if (vfilter.some(v => (data[i].innerHTML).match(v))) {
-            data[i].parentElement.closest('details').style = "display:inline-block"
+            data[i].parentElement.closest('details').style = "display:inline-block";
         } else {
-            data[i].parentElement.closest('details').style = "display:none"
+            data[i].parentElement.closest('details').style = "display:none";
         }
     }
 }
@@ -79,13 +79,13 @@ $(document).ready(function(){
         crossDomain: true,
         success: function(data){
             tablearray.push('<div class=\"hero-type\" style=\"padding-top: 20px;width: 35px;height: 35px;\">\
-                <input type=\"image\" class=\"id_hero_type_0\" style=\"width: 35px;height: 35px;\" src=\"images\\old world.png\"/>\
-                <input type=\"image\" class=\"id_hero_type_1\" style=\"width: 35px;height: 35px;\" src=\"images\\complete.png\"/>\
-                <input type=\"image\" class=\"id_hero_type_2\" style=\"width: 35px;height: 35px;\" src=\"images\\tech.png\"/>\
-                <input type=\"image\" class=\"id_hero_type_3\" style=\"width: 35px;height: 35px;\" src=\"images\\physical.png\"/>\
-                <input type=\"image\" class=\"id_hero_type_4\" style=\"width: 35px;height: 35px;\" src=\"images\\psychic.png\"/>\
-                <input type=\"image\" class=\"id_hero_type_5\" style=\"width: 35px;height: 35;\" src=\"images\\agile.png\"/>\
-                <input type=\"button\" class=\"id_hero_all\" style=\"width: 35px;height: 35px;justify-content: center;\" value=\"All\"/>\
+                <input type=\"image\" class=\"id_hero_type_0\" id="type-img" style=\"width: 35px;height: 35px;\" src=\"images\\old world.png\"/>\
+                <input type=\"image\" class=\"id_hero_type_1\" id="type-img" style=\"width: 35px;height: 35px;\" src=\"images\\complete.png\"/>\
+                <input type=\"image\" class=\"id_hero_type_2\" id="type-img" style=\"width: 35px;height: 35px;\" src=\"images\\tech.png\"/>\
+                <input type=\"image\" class=\"id_hero_type_3\" id="type-img" style=\"width: 35px;height: 35px;\" src=\"images\\physical.png\"/>\
+                <input type=\"image\" class=\"id_hero_type_4\" id="type-img" style=\"width: 35px;height: 35px;\" src=\"images\\psychic.png\"/>\
+                <input type=\"image\" class=\"id_hero_type_5\" id="type-img" style=\"width: 35px;height: 35;\" src=\"images\\agile.png\"/>\
+                <input type=\"button\" class=\"id_hero_all\" id="type-img" style=\"width: 35px;height: 35px;justify-content: center;\" value=\"All\"/>\
             </div>')
             tablearray.push('<div class="table-content">')
             vint=0
@@ -125,7 +125,7 @@ $(document).ready(function(){
                 } else {
                     hero_img="<img id=\"hero_icon\" href=\"#myModal"+vint+"\" src=\"images\\avatar_"+ data[id].shortname +".png\" title=\""+v_role+"\"/>"
                 }
-                tablearray.push("</div><div class=\"hero_name\" href=\"#myModal"+vint+"\"><h4>"+ boss + data[id].hero+"</h4><div class=\"hero_icon\" href=\"#myModal"+vint+"\">"+hero_img+"</div><div id=\"myModal"+vint+"\" class=\"modal\"><div class=\"modal-content\"><div class=\"modal-body\"><dl>")
+                tablearray.push("</div><div class=\"hero_name\" href=\"#myModal"+vint+"\"><h4 href=\"#myModal"+vint+"\">"+ boss + data[id].hero+"</h4><div class=\"hero_icon\" href=\"#myModal"+vint+"\">"+hero_img+"</div><div id=\"myModal"+vint+"\" class=\"modal\"><div class=\"modal-content\"><div class=\"modal-body\"><dl>")
                 var skill = skills(data[id].details.skill);
                 var talent = talents(data[id].details.talent);
                 var blessing = blessings(data[id].details.blessing);
@@ -145,7 +145,6 @@ $(document).ready(function(){
                 vint++
             }
             tablearray.push("</div");
-            document.getElementById("container").innerHTML = tablearray.join('');
         }
     }).done(function() {
         // Get the button that opens the modal
@@ -181,27 +180,29 @@ $(document).ready(function(){
                 }
             }
         }
+        document.getElementById("container").innerHTML = tablearray.join('');
+        init_filter()
     });
 
 });
-
-
-//const
-const ow_button=document.querySelector('.id_hero_type_0')
-const comp_button=document.querySelector('.id_hero_type_1')
-const tech_button=document.querySelector('.id_hero_type_2')
-const phys_button=document.querySelector('.id_hero_type_3')
-const psy_button=document.querySelector('.id_hero_type_4')
-const agile_button=document.querySelector('.id_hero_type_5')
-const all_button=document.querySelector('.id_hero_all')
-//Type Filters
-ow_button.addEventListener('click', ()=>filter(["Type: Old World"],"hero-attr"));
-comp_button.addEventListener('click', ()=>filter(["Type: Complete"],"hero-attr"));
-tech_button.addEventListener('click', ()=>filter(["Type: Tech"],"hero-attr"));
-phys_button.addEventListener('click', ()=>filter(["Type: Physical"],"hero-attr"));
-psy_button.addEventListener('click', ()=>filter(["Type: Psychic"],"hero-attr"));
-agile_button.addEventListener('click', ()=>filter(["Type: Agile"],"hero-attr"));
-all_button.addEventListener('click', ()=>filter(["Type: Agile","Type: Old World","Type: Complete","Type: Tech","Type: Physical","Type: Psychic"],"hero-attr"));
+function init_filter(){
+    //const
+    const ow_button=document.querySelector('.id_hero_type_0')
+    const comp_button=document.querySelector('.id_hero_type_1')
+    const tech_button=document.querySelector('.id_hero_type_2')
+    const phys_button=document.querySelector('.id_hero_type_3')
+    const psy_button=document.querySelector('.id_hero_type_4')
+    const agile_button=document.querySelector('.id_hero_type_5')
+    const all_button=document.querySelector('.id_hero_all')
+    //Type Filters
+    ow_button.addEventListener('click', ()=>filter(["Type: Old World"],"hero-attr"));
+    comp_button.addEventListener('click', ()=>filter(["Type: Complete"],"hero-attr"));
+    tech_button.addEventListener('click', ()=>filter(["Type: Tech"],"hero-attr"));
+    phys_button.addEventListener('click', ()=>filter(["Type: Physical"],"hero-attr"));
+    psy_button.addEventListener('click', ()=>filter(["Type: Psychic"],"hero-attr"));
+    agile_button.addEventListener('click', ()=>filter(["Type: Agile"],"hero-attr"));
+    all_button.addEventListener('click', ()=>filter(["Type: Agile","Type: Old World","Type: Complete","Type: Tech","Type: Physical","Type: Psychic"],"hero-attr"));
+}
 
 document.querySelectorAll('.id_hero_0').forEach(input => input.addEventListener('click', ()=>filter(["Heals the ally","healing self and the ally","Healing to allies"],"modal-content")));
 document.querySelectorAll('.id_hero_1').forEach(input => input.addEventListener('click', ()=>filter(["Attack of allies","all allies' Attack"],"modal-content")));

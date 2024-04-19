@@ -145,6 +145,7 @@ $(document).ready(function(){
                 vint++
             }
             tablearray.push("</div");
+            document.getElementById("container").innerHTML = tablearray.join('');
         }
     }).done(function() {
         // Get the button that opens the modal
@@ -180,11 +181,11 @@ $(document).ready(function(){
                 }
             }
         }
-        document.getElementById("container").innerHTML = tablearray.join('');
         init_filter()
     });
 
 });
+
 function init_filter(){
     //const
     const ow_button=document.querySelector('.id_hero_type_0')

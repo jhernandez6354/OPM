@@ -71,7 +71,7 @@ def write_to_file(name,ability,text,ability_file):
         try:
             data[name][ability]=text
         except:
-            data[name] = {ability:text}     
+            data[name] = {ability:text}
         f.seek(0)
         json.dump(data, f, indent=4)
         f.truncate()     # remove remaining part

@@ -205,9 +205,36 @@ function init_filter(){
     all_button.addEventListener('click', ()=>filter(["Type: Agile","Type: Old World","Type: Complete","Type: Tech","Type: Physical","Type: Psychic"],"hero-attr"));
 }
 
+//Special Filters
 document.querySelectorAll('.id_hero_0').forEach(input => input.addEventListener('click', ()=>filter(["Heals the ally","healing self and the ally","Healing to allies"],"modal-content")));
 document.querySelectorAll('.id_hero_1').forEach(input => input.addEventListener('click', ()=>filter(["Attack of allies","all allies' Attack"],"modal-content")));
 document.querySelectorAll('.id_hero_2').forEach(input => input.addEventListener('click', ()=>filter(["all allies gain a shield"],"modal-content")));
 document.querySelectorAll('.id_hero_3').forEach(input => input.addEventListener('click', ()=>filter(["Stun the target", "hance to cause Stun","hance to inflict Stun","and inflicting Stun for"," inflicts Stun on the target","and Stunning them for","causes Stun on all"],"modal-content")));
 //Bot Filters
 document.querySelectorAll('.id_bot_0').forEach(input => input.addEventListener('click', ()=>filter(["Bots, max level increases by 30 levels","Defender Bots","Attack Bots"],"modal-content")));
+//Action Effect Filters
+document.querySelectorAll('.id_hero_dot_0').forEach(input => input.addEventListener('click', ()=>filter(["Bleed"],"modal-content")));
+document.querySelectorAll('.id_hero_dot_1').forEach(input => input.addEventListener('click', ()=>filter(["Electrify"],"modal-content")));
+document.querySelectorAll('.id_hero_dot_2').forEach(input => input.addEventListener('click', ()=>filter(["Acid"],"modal-content")));
+document.querySelectorAll('.id_hero_dot_3').forEach(input => input.addEventListener('click', ()=>filter(["Burn"],"modal-content")));
+
+document.querySelectorAll('.id_hero_control_0').forEach(input => input.addEventListener('click', ()=>filter(["Stun"],"modal-content")));
+document.querySelectorAll('.id_hero_control_1').forEach(input => input.addEventListener('click', ()=>filter(["Silence"],"modal-content")));
+document.querySelectorAll('.id_hero_control_2').forEach(input => input.addEventListener('click', ()=>filter(["Frozen"],"modal-content")));
+document.querySelectorAll('.id_hero_control_3').forEach(input => input.addEventListener('click', ()=>filter(["Exile"],"modal-content")));
+document.querySelectorAll('.id_hero_control_4').forEach(input => input.addEventListener('click', ()=>filter(["Paralyze"],"modal-content")));
+document.querySelectorAll('.id_hero_control_5').forEach(input => input.addEventListener('click', ()=>filter(["Sleep"],"modal-content")));
+
+document.querySelectorAll('.id_hero_def_0').forEach(input => input.addEventListener('click', ()=>filter(["Immune to Control", "Control Immunity"],"modal-content")));
+document.querySelectorAll('.id_hero_def_1').forEach(input => input.addEventListener('click', ()=>filter(["Lifesteal"],"modal-content")));
+document.querySelectorAll('.id_hero_def_2').forEach(input => input.addEventListener('click', ()=>filter(["Unyeilding"],"modal-content")));
+document.querySelectorAll('.id_hero_def_3').forEach(input => input.addEventListener('click', ()=>filter(["Taunt"],"modal-content")));
+
+document.querySelectorAll('.id_hero_special_0').forEach(input => input.addEventListener('click', ()=>filter(["Energy Loss"],"modal-content")));
+document.querySelectorAll('.id_hero_special_1').forEach(input => input.addEventListener('click', ()=>filter(["Ninja Mark"],"modal-content")));
+document.querySelectorAll('.id_hero_special_2').forEach(input => input.addEventListener('click', ()=>filter(["True Damage"],"modal-content")));
+document.querySelectorAll('.id_hero_special_3').forEach(input => input.addEventListener('click', ()=>filter(["Cold"],"modal-content")));
+
+document.querySelectorAll('.id_hero_chase_0').forEach(input => input.addEventListener('click', ()=>filter(["Knock Down","Knocked Down","Knock-Down","Knocked-Down","Knocked Up","Knocked-Up","Knock Up","Knock-Up","nock down","nocked down","nock-down","nocked-down","nocked up","nocked-up","nock up","nock-up"],"modal-content")));
+document.querySelectorAll('.id_hero_chase_1').forEach(input => input.addEventListener('click', ()=>filter(["evitate","evitated","evitates"],"modal-content")));
+document.querySelectorAll('.id_hero_chase_2').forEach(input => input.addEventListener('click', ()=>filter(["riven Back","rive Back","rives Back","riven-Back","rive-Back","rives-Back","rive Back","rive-Back","riven back","rive back","rives back","riven-back","rive-back","rives-back","rive back","Drive-back"],"modal-content")));

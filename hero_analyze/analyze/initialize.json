@@ -1,0 +1,43 @@
+{
+    "rage":50,
+    "char_bonus": {
+        "3": {
+            "hp": 0.1,
+            "atk": 0.1
+        },
+        "32": {
+            "hp": 0.15,
+            "atk": 0.15
+        },
+        "4":{
+            "hp": 0.2,
+            "atk": 0.2
+        },
+        "5":{
+            "hp": 0.25,
+            "atk": 0.25
+        }
+    }, "ow_bonus":{
+        "1": {
+            "hp": 0.2
+        },
+        "2": {
+            "hp": 0.2,
+            "def": 0.55
+        },
+        "3": {
+            "hp": 0.2,
+            "def": 0.55,
+            "dr": 0.15
+        }
+    },
+    "adv":{
+        "ow":"complete",
+        "complete":"ow",
+        "hi-tech":"weapon",
+        "weapon": "physical",
+        "physical": "psychic",
+        "psychic":"hi-tech",
+        "dmg": 0.25
+    }
+}

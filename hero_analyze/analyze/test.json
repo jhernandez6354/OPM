@@ -1,0 +1,201 @@
+{
+    "Fukegao": {
+        "chase": "drive-back",
+        "type": "Tech",
+        "talent": {
+            "rage": {
+                "amount": "energyloss",
+                "chance": {
+                    "pct": 0.6
+                },
+                "target": "all",
+                "trigger": "active",
+                "rounds": 2
+            }
+        },
+        "skills": {
+            "normal": {
+                "atk": {
+                    "amount": 1.2,
+                    "target": "enemy"
+                },
+                "if_cond": {
+                    "bleed": {
+                        "atk": 0.8
+                    }
+                },
+                "chance": {
+                    "pct": 0.5,
+                    "defense": -0.5,
+                    "rounds": 2,
+                    "target": "enemy"
+                }
+            },
+            "active": {
+                "atk": {
+                    "amount": 1.5,
+                    "target": "allenemy"
+                },
+                "status": {
+                    "bleed": 0.3,
+                    "acc": -0.1,
+                    "rounds": 4,
+                    "target": "allenemy"
+                }
+            },
+            "passive1": {
+                "chase": {
+                    "type": "driveback",
+                    "trigger": "normal",
+                    "atk": 1
+                },
+                "chance": {
+                    "stun": 0.5,
+                    "rounds": 1
+                }
+            },
+            "passive2": {
+                "hp": 0.25,
+                "atk": 0.25,
+                "target": "self",
+                "action": "start"
+            }
+        },
+        "limit": {
+            "action": "round",
+            "target": "self",
+            "rounds": 1,
+            "modify": {
+                "trigger": "passive1",
+                "chance": {
+                    "stun": 1
+                }
+            },
+            "condition": {
+                "target": "anyenemy",
+                "status": "bleed"
+            },
+            "shield": {
+                "amount": {
+                    "atk": 0.4
+                }
+            }
+        },
+        "mega_limit": {
+            "condition": {
+                "target": "anyenemy",
+                "status": "dead"
+            },
+            "control_immune": {
+                "target": "self"
+            },
+            "sleep": {
+                "target": "allenemy",
+                "rounds": 2
+            },
+            "damage": 0.3,
+            "stack": {
+                "max": 2
+            }
+        }
+    },
+    "OLD WORLD BOROS": {
+        "chase": "levitate",
+        "type": "Old World",
+        "talent": {
+            "trigger": "active",
+            "stack": {
+                "amount": 1,
+                "atk": 1
+            },
+            "orlowest": {
+                "enemy": {
+                    "hp": 0.05
+                },
+                "self": {
+                    "atk": 1
+                }
+            }
+        },
+        "skills": {
+            "normal": {
+                "atk": 2.8,
+                "target": "enemy",
+                "rage": {
+                    "steal": 10
+                }
+            },
+            "active": {
+                "target": "randenemy",
+                "atk": 1.2,
+                "amount": 10
+            },
+            "passive1": {
+                "chase": "levitate",
+                "atk": 2.2
+            },
+            "passive2": {
+                "stack": {
+                    "ge": 4,
+                    "status": {
+                        "condition": "paralyze",
+                        "rounds": 2
+                    },
+                    "rounds": 2
+                },
+                "trigger": "attack"
+            }
+        },
+        "limit": {
+            "trigger": "active",
+            "stack": {
+                "atk": 0.3,
+                "modify": "active",
+                "max": 2
+            },
+            "modify": {
+                "active": {
+                    "amount": 20
+                }
+            },
+            "rage": 4
+        },
+        "mega_limit": {
+            "modify": {
+                "trigger": "active",
+                "target": "ally",
+                "rounds": 1,
+                "stack": false,
+                "rage": 20
+            }
+        }
+    },
+    "Marugori": {
+        "type":"Boss",
+        "skills": {
+            "normal": {
+                "target": "enemycolumn",
+                "action": "normal",
+                "dispel": {
+                    "target": "enemycolumn",
+                    "buff": {
+                        "type": "any",
+                        "stack": 1
+                    }
+                }
+            },
+            "active": {
+                "target": "allenemy"
+            },
+            "passive1": {
+                "trigger": "normal",
+                "rounds": [2,4],
+                "status": "stun"
+            },
+            "passive2": {
+                "ifnot_condition": "stun",
+                "dr": 0.5
+            }
+        }
+    }
+}

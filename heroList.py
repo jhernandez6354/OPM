@@ -9,9 +9,9 @@ from dotenv import load_dotenv
 #This assumes these files exist in the csv folder and will save them to their own maps to be used later.
 #The files in \Storage\Android\data\com.alpha.mpsen.android\cache\DiffConfig and are subject to change weekly.
 
-adb_pull=False #I pull the files from the game generated csv files using Nox. 
+adb_pull=True #I pull the files from the game generated csv files using Nox. 
     # Since I only use Nox for this, I only set this to true when I want to pull the new data every update (2 weeks).
-b_s3_upload=False #I'm trying to do as little work with this as possible so I have the script upload the files for me to s3.
+b_s3_upload=True #I'm trying to do as little work with this as possible so I have the script upload the files for me to s3.
     #Set this flag to false if you don't want it attempt s3 uploads, which will fail unless you have access keys in your .env file.
 bucket="elasticbeanstalk-us-east-1-422356278867"
 region="us-east-1"
@@ -325,7 +325,7 @@ def Hero(reader):
                         b_hero=False
                         b_boss=True
                         inc=10000
-                    elif int(row[1])==1 and int(row[2])<5:
+                    elif int(row[2])==1 and int(row[2])<5:
                         b_hero=False
                         b_boss=False
                     else:
@@ -1036,7 +1036,7 @@ def s3_upload(file,data):
 
 def mapHero(d_hero):
     mHero=[]
-    for key, hero in d_hero['Hero'].items(): #First Loop though the list of heroes as your primary list
+    for key, hero in reversed(d_hero['Hero'].items()): #First Loop though the list of heroes as your primary list
         name=d_hero[lang].get(hero['heronameid'])
         b_active=True #A flag for the website to indicate if the character is in the works, but not yet released.
         if name is None: #WIP: This works until it doesn't; then I'll reevaluate the character name indexing.
@@ -1177,7 +1177,7 @@ def mapHero(d_hero):
 
 if adb_pull is True:
     adb_pull_files()
-convert_game_files(os.getcwd()+"\\delimited")
+#convert_game_files(os.getcwd()+"\\delimited")
 for lang in lang_list:
     if lang == 'Default_English':
         f_list="herolist"

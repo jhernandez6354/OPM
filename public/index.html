@@ -12,12 +12,11 @@
     <body>
         
         <div class="box"><form name="search"><input type="text" id="userin" onkeyup="search_hero()" class="input" name="txt" onmouseout="this.value = ''; this.blur();" ></form><i class="fa fa-search"></i></div>
-        <!--<div class="export-data"><button style='font-size:16px' id="export-csv">Export to CSV</button></div>-->
-        <details class="checkboxes"><summary>Additional Filters</summary>
+        <details class="checkboxes"><summary style="font-size: large;border: 1px;border-radius: 1%;border-color: gray;">Additional Filters</summary>
             <div class="row" name="team_buff" id="id_row" >
                 <ul id="id_hero_buff">
                     <li>
-                    <label for="id_hero_0"><input type="button" id="filter-btn" name="hero" value="Team Damage Boost" placeholder="Hero Boosts Team Damage" ></label>
+                    <label for="id_hero_0"><input type="button" id="filter-btn" name="hero" value="Team Dmg Boost" placeholder="Hero Boosts Team Damage" ></label>
                     </li>
                     <li><label for="id_hero_1"><input type="button" id="filter-btn" name="hero" value="Team Shield" placeholder="Hero Creates Shields for Team" class="id_hero_1" ></label>
                     </li>
@@ -25,15 +24,52 @@
                     </li>
                     <li><label for="id_hero_3"><input type="button" id="filter-btn" name="hero" value="Stun Chance" placeholder="Hero can stun" class="id_hero_3" ></label>
                     </li>
+                </ul><br>
+                <div class="row" name="bot_checkbox" id="id_row" >
+                    <ul id="id_bot">
+                        <li>
+                        <label for="id_bot_0"><input type="button" id="filter-btn" name="bot" value="Bot Level Boost" placeholder="Hero Boosts Bot Level" class="id_bot_0" ></label>
+                        </li>
+                    </ul>
+                </div><br>
+                <label for="id_hero_dot">Damage over Time Effects:</label><hr>
+                <ul class="row"  name="id_hero_dot" id="id_row">
+                    <li><label for="id_hero_dot_0"><input type="button" style="background-color: rgb(146, 43, 43);" id="filter-btn" name="hero" value="Bleed" class="id_hero_dot_0" ></label></li>
+                    <li><label for="id_hero_dot_1"><input type="button" style="background-color: rgb(68, 155, 236);" id="filter-btn" name="hero" value="Electrify" class="id_hero_dot_1" ></label></li>
+                    <li><label for="id_hero_dot_2"><input type="button" style="background-color: rgb(33, 161, 61);" id="filter-btn" name="hero" value="Acid" class="id_hero_dot_2" ></label></li>
+                    <li><label for="id_hero_dot_3"><input type="button" style="background-color: rgb(240, 138, 5);" id="filter-btn" name="hero" value="Burn" class="id_hero_dot_3" ></label></li>
+                </ul><br>
+                <label for="id_hero_control">Control Effects:</label><hr>
+                <ul class="row"  name="id_hero_control" id="id_row">
+                    <li><label for="id_hero_control_0"><input type="button" id="filter-btn" name="hero" value="Stun" class="id_hero_control_0" ></label></li>
+                    <li><label for="id_hero_control_1"><input type="button" id="filter-btn" name="hero" value="Silence" class="id_hero_control_1" ></label></li>
+                    <li><label for="id_hero_control_2"><input type="button" id="filter-btn" name="hero" value="Frozen" class="id_hero_control_2" ></label></li>
+                    <li><label for="id_hero_control_3"><input type="button" id="filter-btn" name="hero" value="Exile" class="id_hero_control_3" ></label></li>
+                    <li><label for="id_hero_control_4"><input type="button" id="filter-btn" name="hero" value="Paralyze" class="id_hero_control_4" ></label></li>
+                    <li><label for="id_hero_control_5"><input type="button" id="filter-btn" name="hero" value="Sleep" class="id_hero_control_5" ></label></li>
+                </ul><br>
+                <label for="id_hero_def">Defense Effects:</label><hr>
+                <ul class="row"  name="id_hero_def" id="id_row">
+                    <li><label for="id_hero_def_0"><input type="button" id="filter-btn" name="hero" value="Immunue to Control" class="id_hero_def_0" ></label></li>
+                    <li><label for="id_hero_def_1"><input type="button" id="filter-btn" name="hero" value="Lifesteal" class="id_hero_def_1" ></label></li>
+                    <li><label for="id_hero_def_2"><input type="button" id="filter-btn" name="hero" value="Unyeilding" class="id_hero_def_2" ></label></li>
+                    <li><label for="id_hero_def_3"><input type="button" id="filter-btn" name="hero" value="Taunt" class="id_hero_def_3" ></label></li>
+                </ul><br>
+                <label for="id_hero_special">Special Effects:</label><hr>
+                <ul class="row"  name="id_hero_special" id="id_row">
+                    <li><label for="id_hero_special_0"><input type="button" id="filter-btn" name="hero" value="Energy Loss" class="id_hero_special_0" ></label></li>
+                    <li><label for="id_hero_special_1"><input type="button" id="filter-btn" name="hero" value="Ninja Mark" class="id_hero_special_1" ></label></li>
+                    <li><label for="id_hero_special_2"><input type="button" id="filter-btn" name="hero" value="True Damage" class="id_hero_special_2" ></label></li>
+                    <li><label for="id_hero_special_3"><input type="button" id="filter-btn" name="hero" value="Cold" class="id_hero_special_3" ></label></li>
+                </ul><br>
+                <label for="id_hero_chase">Chase Abilities:</label><hr>
+                <ul name="id_hero_chase" id="id_row">
+                    <li><label for="id_hero_chase_0"><input type="button" id="filter-btn" name="hero" value="Knock Down" class="id_hero_chase_0" ></label></li>
+                    <li><label for="id_hero_chase_1"><input type="button" id="filter-btn" name="hero" value="Levitate" class="id_hero_chase_1" ></label></li>
+                    <li><label for="id_hero_chase_2"><input type="button" id="filter-btn" name="hero" value="Drive Back" class="id_hero_chase_2" ></label></li>
                 </ul>
             </div>
-            <div class="row" name="bot_checkbox" id="id_row" >
-                <ul id="id_bot">
-                    <li>
-                    <label for="id_bot_0"><input type="button" id="filter-btn" name="bot" value="Bot Level Boost" placeholder="Hero Boosts Bot Level" class="id_bot_0" ></label>
-                    </li>
-                </ul>
-            </div>
+            
             <b><i>Additional filters are still a work in progress and can return unpredictable results.</i></b>
         </details>
         <div class="container" id="container"></div>

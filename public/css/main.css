@@ -31,8 +31,23 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .checkboxes {
+  display: grid;
   padding-top: 51px;
   margin-left: 8%;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 2px;
+  margin: 2px 0;
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, .1fr));
+}
+
+#filter-btn {
+  width: 140px;
 }
 
 .hero-type {
@@ -180,6 +195,13 @@ input#filter-btn:hover {
   flex-direction: row;
   flex-wrap: wrap;
   margin-bottom: 10px; }
+
+hr {
+  text-align:  left;
+  margin-right: 15%;
+  margin-top:0px;
+  margin-bottom:0px;
+}
 
 .header__item {
   text-transform: uppercase; }

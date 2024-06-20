@@ -1,0 +1,31 @@
+Damage over Time Effects:
+    Bleed: Takes damage before normal skill.
+    Burn: Takes damage before normal skill.
+    Electrify: Takes damage before normal skill.
+    Acid: Takes damage at the beginning of the round. (Max 5 stacks)
+
+Control Effects:
+    Silence: Unable to use active skill.
+    Stun: Unable to use Normal or Active Skills.
+    Frozen: Unable to use Normal or Active Skills.
+    Exile: Targets cannot use skills or be targeted.
+    Paralyze: Normal and Passive Skills don't work. Paralyze releases after active skill triggers.
+    Sleep: Unable to use Normal or Active Skills. Effect is removed on taking damage.
+
+Defense Effects:
+    Immunue to Control: Unable to be afflicted by Control or Exile Effects, ex. Stun or Silence.
+    Lifesteal: A percentage of damage is converted into health for the attacker.
+    Unyeilding: Character cannot be defeated.
+    Taunt: Compels enemies to attack the taunting unit first.
+
+Special Effects:
+    Energy Loss: Normal Attacks lose rage instead of adding.
+    Ninja Mark: Reduces target defense (Max 5 marks)
+    True Damage: Ignores target's defense and damage reduction.
+    Cold: Lowers targets attack.
+
+Chase Abilities: Grants attacker a chance for extra attack. Applies to all attackers with same chase type.
+    Knock Up (Text error for Garou and Carnage Kabuto: Bass Player. It should be knock down.)
+    Knock Down
+    Levitate
+    Drive Back

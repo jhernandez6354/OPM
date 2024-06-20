@@ -1,16 +1,21 @@
 {
-    "lineup":[
-        "Fukegao",
-        "Sky King - Spring Carnival Edition",
-        "Blue Fire - Guitarist",
-        "Pluton",
-        "Death Gatling - Easter Edition"
-    ],
-    "compare": [
-        "Genos - Old World Edition",
-        "Tank-top Master - Old World Edition",
-        "OLD WORLD BOROS",
-        "Monsterized Bakuzan - Music Festival Edition",
-        "Terrible Tornado - 2024 Edition"
-    ]
+    "lineup":{
+        "Fukegao":{
+            "position": 1,
+            "talent_level": 30,
+            "limit_level": 10,
+            "spirit_ability": 1,
+            "potential_chip_1": 2
+        },
+        "OLD WORLD BOROS":{
+            "position": 2,
+            "talent_level": 40,
+            "limit_level": 10
+        }
+    },
+    "compare": {
+        "Marugori":{
+            "position": 1
+        }
+    }
 }
